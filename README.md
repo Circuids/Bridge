@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://raw.githubusercontent.com/Circuids/Bridge/master/images/cover_logo_min.jpg" alt="Bridge_logo" height=250 width=1000/>
+  <img src="https://github.com/Circuids/Bridge/blob/master/images/cover_logo_min.jpg?raw=true" alt="Bridge_logo" height=250 width=1000/>
 </div>
 
 <div align="center">
