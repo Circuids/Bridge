@@ -1,0 +1,24 @@
+@namespace Circuids.Bridge
+
+@if (_isInitialized)
+{
+    @ChildContent
+}
+
+@code {
+    [Inject] private IBridgeSafeArea SafeArea { get; set; } = default!;
+
+    [Parameter] public RenderFragment ChildContent { get; set; } = default!;
+
+    private bool _isInitialized;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await SafeArea.InitializeAsync();
+            _isInitialized = true;
+            StateHasChanged();
+        }
+    }
+}

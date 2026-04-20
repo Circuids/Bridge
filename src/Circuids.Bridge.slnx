@@ -1,0 +1,13 @@
+<Solution>
+  <Folder Name="/Samples/">
+    <Project Path="../sample/Circuids.Bridge.Blazor.Server.Sample/Circuids.Bridge.Blazor.Server.Sample.csproj" Id="df43c2e1-6e6d-4207-b871-5d56dfe044bd" />
+    <Project Path="../sample/Circuids.Bridge.Blazor.WebAssembly.Sample/Circuids.Bridge.Blazor.WebAssembly.Sample.csproj" Id="83c04a0c-ac28-46d1-bbf7-fd2134893af0" />
+    <Project Path="../sample/Circuids.Bridge.Maui.Sample/Circuids.Bridge.Maui.Sample.csproj" Id="8e214eb1-9e2b-4675-a1f4-12fbe5e57430" />
+  </Folder>
+  <Folder Name="/Source/">
+    <Project Path="Circuids.Bridge.Blazor/Circuids.Bridge.Blazor.csproj" />
+    <Project Path="Circuids.Bridge.Maui/Circuids.Bridge.Maui.csproj" />
+    <Project Path="Circuids.Bridge/Circuids.Bridge.csproj" />
+  </Folder>
+  <Folder Name="/Tests/" />
+</Solution>

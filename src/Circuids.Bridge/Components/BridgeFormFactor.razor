@@ -1,0 +1,127 @@
+@namespace Circuids.Bridge
+@inject IBridgeFormFactor Form
+@implements IAsyncDisposable
+
+@ChildContent?.Invoke(formFactor)
+
+@if (formFactor.FormFactor is Circuids.Bridge.FormFactor.Phone)
+{
+    @if (Phone is not null)
+    {
+        @Phone
+    }
+    else if (TabletAndPhone is not null)
+    {
+        @TabletAndPhone
+    }
+    else if (DesktopAndPhone is not null)
+    {
+        @DesktopAndPhone
+    }
+    else
+    {
+        @Default
+    }
+}
+else if (formFactor.FormFactor is Circuids.Bridge.FormFactor.Tablet)
+{
+    @if (Tablet is not null)
+    {
+        @Tablet
+    }
+    else if (TabletAndPhone is not null)
+    {
+        @TabletAndPhone
+    }
+    else if (DesktopAndTablet is not null)
+    {
+        @DesktopAndTablet
+    }
+    else
+    {
+        @Default
+    }
+}
+else if (formFactor.FormFactor is Circuids.Bridge.FormFactor.Desktop)
+{
+    @if (Desktop is not null)
+    {
+        @Desktop
+    }
+    else if (DesktopAndTablet is not null)
+    {
+        @DesktopAndTablet
+    }
+    else if (DesktopAndPhone is not null)
+    {
+        @DesktopAndPhone
+    }
+    else
+    {
+        @Default
+    }
+}
+else
+{
+    @Default
+}
+
+@code {
+    [Parameter] public RenderFragment? Desktop { get; set; }
+    [Parameter] public RenderFragment? Tablet { get; set; }
+    [Parameter] public RenderFragment? Phone { get; set; }
+    [Parameter] public RenderFragment? Default { get; set; }
+    [Parameter] public RenderFragment? DesktopAndTablet { get; set; }
+    [Parameter] public RenderFragment? DesktopAndPhone { get; set; }
+    [Parameter] public RenderFragment? TabletAndPhone { get; set; }
+    [Parameter] public RenderFragment<FormFactorInfo>? ChildContent { get; set; }
+
+    [Parameter] public FormFactorInfo FormFactor { get; set; } = FormFactorInfo.Unknown();
+    [Parameter] public EventCallback<FormFactorInfo> FormFactorChanged { get; set; }
+
+    /// <summary>
+    /// When true, reads the form factor once at initialization without attaching a listener.
+    /// </summary>
+    [Parameter] public bool ListenOnce { get; set; }
+
+    private FormFactorInfo formFactor = FormFactorInfo.Unknown();
+    private bool _listening;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            formFactor = Form.FormFactor;
+            FormFactor = formFactor;
+            await FormFactorChanged.InvokeAsync(formFactor);
+            StateHasChanged();
+
+            if (!ListenOnce)
+            {
+                await Form.CreateListenerAsync();
+                _listening = true;
+                Form.FormFactorChanged += OnFormFactorChanged;
+            }
+        }
+    }
+
+    private async void OnFormFactorChanged(object? sender, FormFactorInfo info)
+    {
+        formFactor = info;
+        FormFactor = formFactor;
+        await InvokeAsync(async () =>
+        {
+            await FormFactorChanged.InvokeAsync(info);
+            StateHasChanged();
+        });
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        Form.FormFactorChanged -= OnFormFactorChanged;
+        if (_listening)
+        {
+            await Form.DisposeListenerAsync();
+        }
+    }
+}
