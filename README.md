@@ -12,7 +12,7 @@
 
 # Bridge
 
-**Circuids Bridge** detects host environments, form factors, connectivity, themes, and safe areas across Blazor and MAUI Blazor Hybrid -- from a single shared codebase.
+**Bridge** detects host environments, form factors, connectivity, themes, and safe areas across Blazor and MAUI Blazor Hybrid -- from a single shared codebase.
 
 **Write once, adapt everywhere** -- Clean component-based APIs, injectable services, and zero platform-specific `#if` directives in your shared UI code.
 
@@ -1031,7 +1031,7 @@ public static IServiceCollection AddBridgeForMaui(this IServiceCollection servic
 
 # License
 
-**Circuids Bridge** is Licensed Under [MIT License](https://github.com/Circuids/Bridge/blob/main/LICENSE).
+**Bridge** is Licensed Under [MIT License](https://github.com/Circuids/Bridge/blob/main/LICENSE).
 
 ---
 
@@ -1049,4 +1049,4 @@ Before submitting a PR:
 
 # Sponsoring
 
-If you find this project useful and would like to support its continued development, consider [becoming a sponsor](https://github.com/sponsors/AathifMahir). Your contributions are instrumental in keeping this project maintained and growing. Thank you for your support.
+If you find this project useful and would like to support its continued development, consider [becoming a sponsor](https://github.com/sponsors/Circuids). Your contributions are instrumental in keeping this project maintained and growing. Thank you for your support.
