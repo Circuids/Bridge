@@ -1,7 +1,5 @@
 <div align="center">
-  <img src="images/logo.png" alt="Bridge Logo" width="200"/>
-  <br/>
-  <img src="images/banner.png" alt="Bridge Banner" width="600"/>
+  <img src="images/cover_logo_min.png" alt="Bridge Banner" width="600"/>
 </div>
 
 <div align="center">
