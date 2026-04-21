@@ -1,13 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:local="clr-namespace:Circuids.Bridge.Maui.Sample"
-             xmlns:components="clr-namespace:Circuids.Bridge.Maui.Sample.Components"
+             xmlns:shared="clr-namespace:Circuids.Bridge.Shared.Sample;assembly=Circuids.Bridge.Shared.Sample"
              x:Class="Circuids.Bridge.Maui.Sample.MainPage">
 
     <BlazorWebView x:Name="blazorWebView" HostPage="wwwroot/index.html">
         <BlazorWebView.RootComponents>
-            <RootComponent Selector="#app" ComponentType="{x:Type components:Routes}" />
+            <RootComponent Selector="#app" ComponentType="{x:Type shared:SharedSampleApp}" />
         </BlazorWebView.RootComponents>
     </BlazorWebView>
 

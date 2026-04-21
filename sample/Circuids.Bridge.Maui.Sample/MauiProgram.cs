@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Circuids.Bridge.Maui;
+using Circuids.Bridge.Shared.Sample;
+using Microsoft.Extensions.Logging;
 
 namespace Circuids.Bridge.Maui.Sample;
 
@@ -15,6 +17,8 @@ public static class MauiProgram
             });
 
         builder.Services.AddMauiBlazorWebView();
+        builder.Services.AddBridgeForMaui();
+        builder.Services.AddBridgeSharedSample();
 
 #if DEBUG
 		builder.Services.AddBlazorWebViewDeveloperTools();
