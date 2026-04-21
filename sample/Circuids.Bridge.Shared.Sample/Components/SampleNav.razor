@@ -1,24 +1,53 @@
 @inject IBridge Bridge
 @inject SampleScenarioRegistry Registry
 
-<div class="sample-brand">
-    <span class="sample-brand-kicker">Circuids</span>
-    <strong>Bridge Samples</strong>
-    <span class="sample-brand-meta">Adaptive runtime demos for Blazor Server, WebAssembly, and MAUI.</span>
+<div class="top-row ps-3 navbar navbar-dark sample-nav-top-row">
+    <div class="container-fluid">
+        <a class="navbar-brand sample-navbar-brand" href="">Bridge</a>
+        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </div>
 </div>
 
-<nav class="sample-nav" aria-label="Bridge sample navigation">
-    @foreach (var scenario in Registry.Scenarios)
+<div class="@NavMenuCssClass nav-scrollable" @onclick="CloseNavMenu">
+    <div class="sample-brand px-3">
+        <span class="sample-brand-kicker">Circuids</span>
+        <strong>Bridge Samples</strong>
+        <span class="sample-brand-meta">Shared runtime demos for Blazor Server, WebAssembly, and MAUI.</span>
+    </div>
+
+    <nav class="nav flex-column sample-nav" aria-label="Bridge sample navigation">
+        @foreach (var scenario in Registry.Scenarios)
+        {
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="@scenario.Route" Match="@(string.IsNullOrEmpty(scenario.Route) ? NavLinkMatch.All : NavLinkMatch.Prefix)">
+                    <span class="sample-nav-label">@scenario.Title</span>
+                    <small>@scenario.Eyebrow</small>
+                </NavLink>
+            </div>
+        }
+    </nav>
+
+    <div class="sample-nav-runtime px-3">
+        <div class="sample-eyebrow">Current Runtime</div>
+        <div class="sample-host-readout">@Bridge.Host</div>
+        <div class="sample-runtime-ribbon">Shared project / live host wiring</div>
+    </div>
+</div>
+
+@code {
+    private bool collapseNavMenu = true;
+
+    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu()
     {
-        <NavLink href="@scenario.Route" Match="@(string.IsNullOrEmpty(scenario.Route) ? NavLinkMatch.All : NavLinkMatch.Prefix)">
-            <span>@scenario.Title</span>
-            <small>@scenario.Eyebrow</small>
-        </NavLink>
+        collapseNavMenu = !collapseNavMenu;
     }
-</nav>
 
-<div class="sample-panel sample-panel-compact">
-    <div class="sample-eyebrow">Current Runtime</div>
-    <div class="sample-host-readout">@Bridge.Host</div>
-    <div class="sample-runtime-ribbon">Shared project / live host wiring</div>
-</div>
+    private void CloseNavMenu()
+    {
+        collapseNavMenu = true;
+    }
+}
