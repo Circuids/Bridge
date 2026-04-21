@@ -1,10 +1,16 @@
 using Microsoft.JSInterop;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Circuids.Bridge.Blazor.Internal;
 
 internal sealed class BridgeFormFactorBlazor : IBridgeFormFactor, IAsyncDisposable
 {
+    private static readonly JsonSerializerOptions _jsonOptions = new()
+    {
+        Converters = { new JsonStringEnumConverter() }
+    };
+
     private readonly Lazy<Task<IJSObjectReference>> _moduleTask;
     private readonly DotNetObjectReference<BridgeFormFactorBlazor> _dotNetRef;
 
@@ -70,7 +76,7 @@ internal sealed class BridgeFormFactorBlazor : IBridgeFormFactor, IAsyncDisposab
         if (!_isInitialized)
             throw new BridgeException("BridgeFormFactor is not initialized.");
 
-        var info = JsonSerializer.Deserialize<FormFactorInfo>(formFactorJson);
+        var info = JsonSerializer.Deserialize<FormFactorInfo>(formFactorJson, _jsonOptions);
 
         if (info is not null && FormFactor != info)
         {
@@ -132,7 +138,7 @@ internal sealed class BridgeFormFactorBlazor : IBridgeFormFactor, IAsyncDisposab
         if (string.IsNullOrEmpty(json))
             return FormFactorInfo.Unknown();
 
-        return JsonSerializer.Deserialize<FormFactorInfo>(json) ?? FormFactorInfo.Unknown();
+        return JsonSerializer.Deserialize<FormFactorInfo>(json, _jsonOptions) ?? FormFactorInfo.Unknown();
     }
 
     private void CancelPendingDispose()
