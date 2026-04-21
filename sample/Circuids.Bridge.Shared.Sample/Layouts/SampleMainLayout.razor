@@ -1,0 +1,38 @@
+@inherits LayoutComponentBase
+@inject IBridge Bridge
+
+<div class="sample-shell">
+    <div class="sample-orbit sample-orbit-a"></div>
+    <div class="sample-orbit sample-orbit-b"></div>
+
+    <aside class="sample-sidebar">
+        <SampleNav />
+    </aside>
+
+    <main class="sample-main">
+        <header class="sample-header">
+            <div class="sample-header-copy">
+                <h1 class="sample-title">@GetHostTitle()</h1>
+            </div>
+            <div class="sample-header-meta">
+                <div class="sample-badge">Host: @Bridge.Host</div>
+                <div class="sample-badge sample-badge-secondary">Platform: @Bridge.Platform</div>
+            </div>
+        </header>
+
+        <section class="sample-body">
+            @Body
+        </section>
+    </main>
+</div>
+
+@code {
+    private string GetHostTitle() => Bridge.Host switch
+    {
+        Host.Maui => "MAUI host",
+        Host.Blazor => "Blazor host",
+        Host.Wpf => "WPF host",
+        Host.WinForms => "WinForms host",
+        _ => "Bridge host"
+    };
+}
