@@ -1,0 +1,72 @@
+@page "/host-handlers"
+@inject IBridge Bridge
+@inject SampleHostHandlerRunner Runner
+
+<PageTitle>Bridge Host Handlers</PageTitle>
+
+<section class="sample-panel">
+    <h1>Bridge host handler samples</h1>
+    <div class="sample-tag-row">
+        <StatusBadge Label="Sync" Tone="accent" />
+        <StatusBadge Label="Async" Tone="warning" />
+        <StatusBadge Label="@($"Host {Bridge.Host}")" Tone="sky" />
+    </div>
+</section>
+
+<section class="sample-two-column">
+    <article class="sample-panel">
+        <h2>Synchronous execution</h2>
+        <div class="sample-tag-row sample-tag-row-tight">
+            <StatusBadge Label="@($"Runs {syncRunCount}")" Tone="soft" />
+        </div>
+        <button class="btn btn-dark sample-action" @onclick="RunSyncAsync">Run sync</button>
+
+        @if (syncMessages.Count > 0)
+        {
+            <ul class="sample-log">
+                @foreach (var message in syncMessages)
+                {
+                    <li>@message</li>
+                }
+            </ul>
+        }
+    </article>
+
+    <article class="sample-panel">
+        <h2>Asynchronous execution</h2>
+        <div class="sample-tag-row sample-tag-row-tight">
+            <StatusBadge Label="@($"Runs {asyncRunCount}")" Tone="soft" />
+        </div>
+        <button class="btn btn-outline-dark sample-action" @onclick="RunAsyncAsync">Run async</button>
+
+        @if (asyncMessages.Count > 0)
+        {
+            <ul class="sample-log">
+                @foreach (var message in asyncMessages)
+                {
+                    <li>@message</li>
+                }
+            </ul>
+        }
+    </article>
+</section>
+
+@code {
+    private IReadOnlyList<string> syncMessages = [];
+    private IReadOnlyList<string> asyncMessages = [];
+    private int syncRunCount;
+    private int asyncRunCount;
+
+    private Task RunSyncAsync()
+    {
+        syncMessages = Runner.RunSyncScenario();
+        syncRunCount++;
+        return Task.CompletedTask;
+    }
+
+    private async Task RunAsyncAsync()
+    {
+        asyncMessages = await Runner.RunAsyncScenarioAsync();
+        asyncRunCount++;
+    }
+}

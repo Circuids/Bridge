@@ -1,0 +1,29 @@
+@page "/theme"
+@inject IBridgeTheme ThemeService
+@inject SampleDiagnosticsFormatter Formatter
+
+<PageTitle>Theme Detection</PageTitle>
+
+<DemoSection Eyebrow="Theme" Title="Theme detection" Summary="System appearance, shared UI.">
+    <BridgeTheme>
+        <Light>
+            <div class="theme-preview theme-preview-light">
+                <strong>Light</strong>
+                <span>Bright surface</span>
+            </div>
+        </Light>
+        <Dark>
+            <div class="theme-preview theme-preview-dark">
+                <strong>Dark</strong>
+                <span>Deeper contrast</span>
+            </div>
+        </Dark>
+        <Default>
+            <p class="sample-callout">Theme pending.</p>
+        </Default>
+    </BridgeTheme>
+</DemoSection>
+
+<section class="sample-card-grid">
+    <DemoCard Eyebrow="Current theme" Title="@ThemeService.Theme.ToString()" Summary="@Formatter.DescribeTheme(ThemeService.Theme)" />
+</section>

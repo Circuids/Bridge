@@ -1,0 +1,30 @@
+@page "/form-factor"
+
+<PageTitle>Form Factor Detection</PageTitle>
+
+<DemoSection Eyebrow="Viewport" Title="Form factor detection" Summary="Responsive fragments with live viewport state.">
+    <BridgeFormFactor @bind-FormFactor="currentFormFactor">
+        <Phone>
+            <p class="sample-callout">Phone layout active.</p>
+        </Phone>
+        <Tablet>
+            <p class="sample-callout">Tablet layout active.</p>
+        </Tablet>
+        <Desktop>
+            <p class="sample-callout">Desktop layout active.</p>
+        </Desktop>
+        <Default>
+            <p class="sample-callout">Resolving viewport.</p>
+        </Default>
+    </BridgeFormFactor>
+</DemoSection>
+
+<section class="sample-card-grid">
+    <DemoCard Eyebrow="Detected form factor" Title="@currentFormFactor.FormFactor.ToString()" Summary="@($"Viewport {currentFormFactor.Width:0} x {currentFormFactor.Height:0}")" />
+    <DemoCard Eyebrow="Live sync" Title="State updated automatically" Summary="Same value drives branch + card" />
+    <DemoCard Eyebrow="Breakpoint model" Title="Phone / Tablet / Desktop" Summary="Phone <= 767, Tablet 768-1023, Desktop >= 1024" />
+</section>
+
+@code {
+    private FormFactorInfo currentFormFactor = FormFactorInfo.Unknown();
+}
