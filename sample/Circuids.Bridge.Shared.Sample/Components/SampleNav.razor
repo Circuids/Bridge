@@ -1,0 +1,24 @@
+@inject IBridge Bridge
+@inject SampleScenarioRegistry Registry
+
+<div class="sample-brand">
+    <span class="sample-brand-kicker">Circuids</span>
+    <strong>Bridge Samples</strong>
+    <span class="sample-brand-meta">Adaptive runtime demos for Blazor Server, WebAssembly, and MAUI.</span>
+</div>
+
+<nav class="sample-nav" aria-label="Bridge sample navigation">
+    @foreach (var scenario in Registry.Scenarios)
+    {
+        <NavLink href="@scenario.Route" Match="@(string.IsNullOrEmpty(scenario.Route) ? NavLinkMatch.All : NavLinkMatch.Prefix)">
+            <span>@scenario.Title</span>
+            <small>@scenario.Eyebrow</small>
+        </NavLink>
+    }
+</nav>
+
+<div class="sample-panel sample-panel-compact">
+    <div class="sample-eyebrow">Current Runtime</div>
+    <div class="sample-host-readout">@Bridge.Host</div>
+    <div class="sample-runtime-ribbon">Shared project / live host wiring</div>
+</div>
