@@ -24,10 +24,6 @@ else if (Bridge.Platform is PlatformIdentity.Linux && Linux is not null)
 {
     @Linux
 }
-else if (Bridge.Platform is PlatformIdentity.Web && Web is not null)
-{
-    @Web
-}
 else
 {
     @Default
@@ -39,7 +35,6 @@ else
     [Parameter] public RenderFragment? Windows { get; set; }
     [Parameter] public RenderFragment? Mac { get; set; }
     [Parameter] public RenderFragment? Linux { get; set; }
-    [Parameter] public RenderFragment? Web { get; set; }
     [Parameter] public RenderFragment? Default { get; set; }
     [Parameter] public RenderFragment<PlatformIdentity>? ChildContent { get; set; }
 
