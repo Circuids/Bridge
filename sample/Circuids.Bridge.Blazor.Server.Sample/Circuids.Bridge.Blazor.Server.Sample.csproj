@@ -7,4 +7,9 @@
     <BlazorDisableThrowNavigationException>true</BlazorDisableThrowNavigationException>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Circuids.Bridge.Blazor\Circuids.Bridge.Blazor.csproj" />
+    <ProjectReference Include="..\Circuids.Bridge.Shared.Sample\Circuids.Bridge.Shared.Sample.csproj" />
+  </ItemGroup>
+
 </Project>
