@@ -11,5 +11,4 @@ public enum PlatformIdentity
     Windows,
     Mac,
     Linux,
-    Web,
 }
