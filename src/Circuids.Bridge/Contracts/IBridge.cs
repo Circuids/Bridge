@@ -11,7 +11,7 @@ public interface IBridge
     Host Host { get; }
 
     /// <summary>
-    /// The detected platform: Android, iOS, Windows, Mac, Linux, Web.
+    /// The detected platform: Android, iOS, Windows, Mac, or Linux.
     /// </summary>
     PlatformIdentity Platform { get; }
 
