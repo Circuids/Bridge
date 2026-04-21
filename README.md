@@ -29,12 +29,12 @@
 ## Features
 
 - **Host Detection** - Detect whether the app is running in MAUI, Blazor, WPF, or WinForms
-- **Platform Detection** - Identify the operating system: Android, iOS, Windows, Mac, Linux, or Web
+- **Platform Detection** - Identify the operating system: Android, iOS, Windows, Mac, or Linux
 - **Form Factor Detection** - Classify the device as Phone, Tablet, or Desktop based on viewport width
 - **Connectivity Monitoring** - Monitor internet connectivity in real-time
 - **Theme Detection** - Detect the system light/dark mode preference
 - **Safe Area Insets** - Get safe area insets for notched/cutout devices
-- **BridgeHostHandler** - Execute host-specific C# logic without preprocessor directives
+- **BridgeHostHandler** - Execute host-specific C# logic with Blazor as the default implementation baseline
 - **Two-Way Binding** - Bind form factor and connectivity state directly to your components
 
 ---
@@ -278,7 +278,7 @@ Detect whether the app is running in MAUI, Blazor, WPF, or WinForms.
 
 ## Platform Detection
 
-Detect the operating system: Android, iOS, Windows, Mac, Linux, or Web.
+Detect the operating system: Android, iOS, Windows, Mac, or Linux.
 
 ### Component
 
@@ -289,7 +289,6 @@ Detect the operating system: Android, iOS, Windows, Mac, Linux, or Web.
     <Windows>Windows desktop</Windows>
     <Mac>macOS</Mac>
     <Linux>Linux</Linux>
-    <Web>Generic web browser</Web>
     <Default>Unknown platform</Default>
 </BridgePlatform>
 ```
@@ -591,8 +590,9 @@ using Circuids.Bridge;
 
 public class StoragePathHandler(IBridge bridge) : BridgeHostHandler<string>(bridge)
 {
-    protected override string OnMaui() => FileSystem.AppDataDirectory;
     protected override string OnBlazor() => "/local-storage";
+
+    protected override string OnMaui() => FileSystem.AppDataDirectory;
 }
 
 // Usage
@@ -605,47 +605,47 @@ string path = handler.Execute();
 ```csharp
 public class NotificationHandler(IBridge bridge) : BridgeHostHandler(bridge)
 {
-    protected override void OnMaui()
-    {
-        // Show native MAUI notification
-    }
-
     protected override void OnBlazor()
     {
         // Show browser notification via JS interop
     }
+
+    protected override void OnMaui()
+    {
+        // Show native MAUI notification
+    }
 }
 ```
 
-### Async via Task return
+### Async host handler
 
 ```csharp
-public class DataSyncHandler(IBridge bridge) : BridgeHostHandler<Task>(bridge)
+public class DataSyncHandler(IBridge bridge) : BridgeHostHandlerAsync(bridge)
 {
-    protected override async Task OnMaui()
-    {
-        await SyncWithSqlite();
-    }
-
     protected override async Task OnBlazor()
     {
         await SyncWithIndexedDb();
     }
+
+    protected override async Task OnMaui()
+    {
+        await SyncWithSqlite();
+    }
 }
 
 // Usage
-await handler.Execute();
+await handler.ExecuteAsync();
 ```
 
 ### Default fallbacks
 
-`OnWpf()` and `OnWinForms()` default to calling `OnBlazor()`. Override them only if you need different behavior:
+`OnMaui()`, `OnWpf()`, and `OnWinForms()` default to calling `OnBlazor()`. Override only the hosts that need different behavior:
 
 ```csharp
 public class ClipboardHandler(IBridge bridge) : BridgeHostHandler(bridge)
 {
-    protected override void OnMaui() => /* MAUI clipboard */;
     protected override void OnBlazor() => /* JS clipboard API */;
+    protected override void OnMaui() => /* MAUI clipboard */;
     protected override void OnWpf() => /* WPF-specific clipboard */;
     // OnWinForms() falls back to OnBlazor() by default
 }
@@ -866,7 +866,6 @@ public enum PlatformIdentity
     Windows,
     Mac,
     Linux,
-    Web,
 }
 ```
 
@@ -947,7 +946,7 @@ All components are in the `Circuids.Bridge` namespace.
 | Component | RenderFragments | Context Type |
 |-----------|----------------|--------------|
 | `<BridgeHost>` | `Maui`, `Blazor`, `Wpf`, `WinForms`, `Default` | `Host` |
-| `<BridgePlatform>` | `Android`, `IOS`, `Windows`, `Mac`, `Linux`, `Web`, `Default` | `PlatformIdentity` |
+| `<BridgePlatform>` | `Android`, `IOS`, `Windows`, `Mac`, `Linux`, `Default` | `PlatformIdentity` |
 | `<BridgeFormFactor>` | `Phone`, `Tablet`, `Desktop`, `DesktopAndTablet`, `DesktopAndPhone`, `TabletAndPhone`, `Default` | `FormFactorInfo` |
 | `<BridgeConnectivity>` | `Online`, `Offline` | `bool` |
 | `<BridgeTheme>` | `Light`, `Dark`, `Default` | `ThemeMode` |
@@ -974,8 +973,8 @@ All components are in the `Circuids.Bridge` namespace.
 ```csharp
 public abstract class BridgeHostHandler<T>(IBridge bridge)
 {
-    protected abstract T OnMaui();
     protected abstract T OnBlazor();
+    protected virtual T OnMaui() => OnBlazor();
     protected virtual T OnWpf() => OnBlazor();
     protected virtual T OnWinForms() => OnBlazor();
     protected virtual T OnUnknown() => throw new BridgeException(...);
@@ -988,12 +987,40 @@ public abstract class BridgeHostHandler<T>(IBridge bridge)
 ```csharp
 public abstract class BridgeHostHandler(IBridge bridge)
 {
-    protected abstract void OnMaui();
     protected abstract void OnBlazor();
+    protected virtual void OnMaui() => OnBlazor();
     protected virtual void OnWpf() => OnBlazor();
     protected virtual void OnWinForms() => OnBlazor();
     protected virtual void OnUnknown() => throw new BridgeException(...);
     public void Execute();
+}
+```
+
+### BridgeHostHandlerAsync\<T>
+
+```csharp
+public abstract class BridgeHostHandlerAsync<T>(IBridge bridge)
+{
+    protected abstract Task<T> OnBlazor();
+    protected virtual Task<T> OnMaui() => OnBlazor();
+    protected virtual Task<T> OnWpf() => OnBlazor();
+    protected virtual Task<T> OnWinForms() => OnBlazor();
+    protected virtual Task<T> OnUnknown() => throw new BridgeException(...);
+    public Task<T> ExecuteAsync();
+}
+```
+
+### BridgeHostHandlerAsync
+
+```csharp
+public abstract class BridgeHostHandlerAsync(IBridge bridge)
+{
+    protected abstract Task OnBlazor();
+    protected virtual Task OnMaui() => OnBlazor();
+    protected virtual Task OnWpf() => OnBlazor();
+    protected virtual Task OnWinForms() => OnBlazor();
+    protected virtual Task OnUnknown() => throw new BridgeException(...);
+    public Task ExecuteAsync();
 }
 ```
 
