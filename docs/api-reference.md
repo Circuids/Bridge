@@ -108,7 +108,6 @@ public enum PlatformIdentity
     Windows,
     Mac,
     Linux,
-    Web,
 }
 ```
 
@@ -189,7 +188,7 @@ All components are in the `Circuids.Bridge` namespace.
 | Component | RenderFragments | Context Type |
 |-----------|----------------|--------------|
 | `<BridgeHost>` | `Maui`, `Blazor`, `Wpf`, `WinForms`, `Default` | `Host` |
-| `<BridgePlatform>` | `Android`, `IOS`, `Windows`, `Mac`, `Linux`, `Web`, `Default` | `PlatformIdentity` |
+| `<BridgePlatform>` | `Android`, `IOS`, `Windows`, `Mac`, `Linux`, `Default` | `PlatformIdentity` |
 | `<BridgeFormFactor>` | `Phone`, `Tablet`, `Desktop`, `DesktopAndTablet`, `DesktopAndPhone`, `TabletAndPhone`, `Default` | `FormFactorInfo` |
 | `<BridgeConnectivity>` | `Online`, `Offline` | `bool` |
 | `<BridgeTheme>` | `Light`, `Dark`, `Default` | `ThemeMode` |
@@ -216,8 +215,8 @@ All components are in the `Circuids.Bridge` namespace.
 ```csharp
 public abstract class BridgeHostHandler<T>(IBridge bridge)
 {
-    protected abstract T OnMaui();
     protected abstract T OnBlazor();
+    protected virtual T OnMaui() => OnBlazor();
     protected virtual T OnWpf() => OnBlazor();
     protected virtual T OnWinForms() => OnBlazor();
     protected virtual T OnUnknown() => throw new BridgeException(...);
@@ -230,12 +229,40 @@ public abstract class BridgeHostHandler<T>(IBridge bridge)
 ```csharp
 public abstract class BridgeHostHandler(IBridge bridge)
 {
-    protected abstract void OnMaui();
     protected abstract void OnBlazor();
+    protected virtual void OnMaui() => OnBlazor();
     protected virtual void OnWpf() => OnBlazor();
     protected virtual void OnWinForms() => OnBlazor();
     protected virtual void OnUnknown() => throw new BridgeException(...);
     public void Execute();
+}
+```
+
+### BridgeHostHandlerAsync\<T>
+
+```csharp
+public abstract class BridgeHostHandlerAsync<T>(IBridge bridge)
+{
+    protected abstract Task<T> OnBlazor();
+    protected virtual Task<T> OnMaui() => OnBlazor();
+    protected virtual Task<T> OnWpf() => OnBlazor();
+    protected virtual Task<T> OnWinForms() => OnBlazor();
+    protected virtual Task<T> OnUnknown() => throw new BridgeException(...);
+    public Task<T> ExecuteAsync();
+}
+```
+
+### BridgeHostHandlerAsync
+
+```csharp
+public abstract class BridgeHostHandlerAsync(IBridge bridge)
+{
+    protected abstract Task OnBlazor();
+    protected virtual Task OnMaui() => OnBlazor();
+    protected virtual Task OnWpf() => OnBlazor();
+    protected virtual Task OnWinForms() => OnBlazor();
+    protected virtual Task OnUnknown() => throw new BridgeException(...);
+    public Task ExecuteAsync();
 }
 ```
 

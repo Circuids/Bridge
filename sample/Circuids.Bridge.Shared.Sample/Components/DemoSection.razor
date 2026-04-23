@@ -1,0 +1,24 @@
+<section class="sample-panel @ClassName">
+    @if (!string.IsNullOrWhiteSpace(Eyebrow))
+    {
+        <div class="sample-eyebrow">@Eyebrow</div>
+    }
+    @if (!string.IsNullOrWhiteSpace(Title))
+    {
+        <h2>@Title</h2>
+    }
+    @if (!string.IsNullOrWhiteSpace(Summary))
+    {
+        <p>@Summary</p>
+    }
+
+    @ChildContent
+</section>
+
+@code {
+    [Parameter] public string? Eyebrow { get; set; }
+    [Parameter] public string? Title { get; set; }
+    [Parameter] public string? Summary { get; set; }
+    [Parameter] public string? ClassName { get; set; }
+    [Parameter] public RenderFragment ChildContent { get; set; } = default!;
+}

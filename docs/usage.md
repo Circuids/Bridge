@@ -69,7 +69,7 @@ Detect whether the app is running in MAUI, Blazor, WPF, or WinForms.
 
 ## Platform Detection
 
-Detect the operating system: Android, iOS, Windows, Mac, Linux, or Web.
+Detect the operating system: Android, iOS, Windows, Mac, or Linux.
 
 ### Component
 
@@ -80,7 +80,6 @@ Detect the operating system: Android, iOS, Windows, Mac, Linux, or Web.
     <Windows>Windows desktop</Windows>
     <Mac>macOS</Mac>
     <Linux>Linux</Linux>
-    <Web>Generic web browser</Web>
     <Default>Unknown platform</Default>
 </BridgePlatform>
 ```
@@ -382,8 +381,9 @@ using Circuids.Bridge;
 
 public class StoragePathHandler(IBridge bridge) : BridgeHostHandler<string>(bridge)
 {
-    protected override string OnMaui() => FileSystem.AppDataDirectory;
     protected override string OnBlazor() => "/local-storage";
+
+    protected override string OnMaui() => FileSystem.AppDataDirectory;
 }
 
 // Usage
@@ -396,47 +396,47 @@ string path = handler.Execute();
 ```csharp
 public class NotificationHandler(IBridge bridge) : BridgeHostHandler(bridge)
 {
-    protected override void OnMaui()
-    {
-        // Show native MAUI notification
-    }
-
     protected override void OnBlazor()
     {
         // Show browser notification via JS interop
     }
+
+    protected override void OnMaui()
+    {
+        // Show native MAUI notification
+    }
 }
 ```
 
-### Async via Task return
+### Async host handler
 
 ```csharp
-public class DataSyncHandler(IBridge bridge) : BridgeHostHandler<Task>(bridge)
+public class DataSyncHandler(IBridge bridge) : BridgeHostHandlerAsync(bridge)
 {
-    protected override async Task OnMaui()
-    {
-        await SyncWithSqlite();
-    }
-
     protected override async Task OnBlazor()
     {
         await SyncWithIndexedDb();
     }
+
+    protected override async Task OnMaui()
+    {
+        await SyncWithSqlite();
+    }
 }
 
 // Usage
-await handler.Execute();
+await handler.ExecuteAsync();
 ```
 
 ### Default fallbacks
 
-`OnWpf()` and `OnWinForms()` default to calling `OnBlazor()`. Override them only if you need different behavior:
+`OnMaui()`, `OnWpf()`, and `OnWinForms()` default to calling `OnBlazor()`. Override only the hosts that need different behavior:
 
 ```csharp
 public class ClipboardHandler(IBridge bridge) : BridgeHostHandler(bridge)
 {
-    protected override void OnMaui() => /* MAUI clipboard */;
     protected override void OnBlazor() => /* JS clipboard API */;
+    protected override void OnMaui() => /* MAUI clipboard */;
     protected override void OnWpf() => /* WPF-specific clipboard */;
     // OnWinForms() falls back to OnBlazor() by default
 }

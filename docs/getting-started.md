@@ -2,6 +2,8 @@
 
 Circuids Bridge detects host environments, form factors, connectivity, themes, and safe areas across Blazor and MAUI Blazor Hybrid — from a single shared codebase.
 
+Platform identity is limited to operating systems (`Android`, `IOS`, `Windows`, `Mac`, `Linux`), while host-specific branching uses the host abstractions with `Blazor` as the default fallback for host handlers.
+
 ## Packages
 
 | Package | Use Case |

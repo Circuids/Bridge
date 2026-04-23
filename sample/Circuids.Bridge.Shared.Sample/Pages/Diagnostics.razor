@@ -1,0 +1,107 @@
+@page "/diagnostics"
+@implements IDisposable
+@inject IBridge Bridge
+@inject IBridgeFormFactor FormFactor
+@inject IBridgeConnectivity Connectivity
+@inject IBridgeTheme Theme
+@inject IBridgeSafeArea SafeArea
+@inject SampleDiagnosticsFormatter Formatter
+
+<PageTitle>Bridge Diagnostics</PageTitle>
+
+<DemoSection Eyebrow="Runtime inspection" Title="Diagnostics" Summary="Raw runtime values." />
+
+<section class="sample-definition-grid">
+    <div>
+        <dt>Host</dt>
+        <dd>@Bridge.Host</dd>
+    </div>
+    <div>
+        <dt>Platform</dt>
+        <dd>@Formatter.DescribePlatform(Bridge)</dd>
+    </div>
+    <div>
+        <dt>Platform version</dt>
+        <dd>@Bridge.PlatformVersion</dd>
+    </div>
+    <div>
+        <dt>Initialized</dt>
+        <dd>@Bridge.IsInitialized</dd>
+    </div>
+    <div>
+        <dt>Form factor</dt>
+        <dd>@FormFactor.FormFactor.FormFactor</dd>
+    </div>
+    <div>
+        <dt>Viewport</dt>
+        <dd>@Formatter.DescribeFormFactor(FormFactor.FormFactor)</dd>
+    </div>
+    <div>
+        <dt>Connectivity</dt>
+        <dd>@Formatter.DescribeConnectivity(Connectivity.IsConnected)</dd>
+    </div>
+    <div>
+        <dt>Theme</dt>
+        <dd>@Formatter.DescribeTheme(Theme.Theme)</dd>
+    </div>
+    <div>
+        <dt>Safe area top/right</dt>
+        <dd>@SafeArea.SafeArea.Top / @SafeArea.SafeArea.Right</dd>
+    </div>
+    <div>
+        <dt>Safe area bottom/left</dt>
+        <dd>@SafeArea.SafeArea.Bottom / @SafeArea.SafeArea.Left</dd>
+    </div>
+    <div>
+        <dt>Has insets</dt>
+        <dd>@Formatter.DescribeSafeArea(SafeArea.SafeArea)</dd>
+    </div>
+    <div>
+        <dt>Refresh model</dt>
+        <dd>Live updates through Bridge event notifications</dd>
+    </div>
+</section>
+
+<section class="sample-panel sample-panel-compact">
+    <BridgeHost>
+        <Maui>
+            <p class="sample-callout">MAUI-native runtime values.</p>
+        </Maui>
+        <Blazor>
+            <p class="sample-callout">Browser-backed runtime values.</p>
+        </Blazor>
+        <Default>
+            <p class="sample-callout">Non-primary host.</p>
+        </Default>
+    </BridgeHost>
+</section>
+
+@code {
+    protected override void OnInitialized()
+    {
+        Bridge.PlatformChanged += HandleBridgePlatformChanged;
+        FormFactor.FormFactorChanged += HandleFormFactorChanged;
+        Connectivity.ConnectionChanged += HandleConnectionChanged;
+        Theme.ThemeChanged += HandleThemeChanged;
+        SafeArea.SafeAreaChanged += HandleSafeAreaChanged;
+    }
+
+    public void Dispose()
+    {
+        Bridge.PlatformChanged -= HandleBridgePlatformChanged;
+        FormFactor.FormFactorChanged -= HandleFormFactorChanged;
+        Connectivity.ConnectionChanged -= HandleConnectionChanged;
+        Theme.ThemeChanged -= HandleThemeChanged;
+        SafeArea.SafeAreaChanged -= HandleSafeAreaChanged;
+    }
+
+    private void HandleBridgePlatformChanged(object? sender, PlatformIdentity platform) => InvokeAsync(StateHasChanged);
+
+    private void HandleFormFactorChanged(object? sender, FormFactorInfo info) => InvokeAsync(StateHasChanged);
+
+    private void HandleConnectionChanged(object? sender, bool isConnected) => InvokeAsync(StateHasChanged);
+
+    private void HandleThemeChanged(object? sender, ThemeMode themeMode) => InvokeAsync(StateHasChanged);
+
+    private void HandleSafeAreaChanged(object? sender, SafeAreaInsets safeArea) => InvokeAsync(StateHasChanged);
+}

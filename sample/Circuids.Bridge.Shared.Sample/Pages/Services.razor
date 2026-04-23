@@ -1,0 +1,34 @@
+@page "/services"
+@inject IBridge Bridge
+@inject IBridgeFormFactor FormFactor
+@inject IBridgeConnectivity Connectivity
+@inject IBridgeTheme Theme
+@inject IBridgeSafeArea SafeArea
+@inject SampleDiagnosticsFormatter Formatter
+
+<PageTitle>Services via DI</PageTitle>
+
+<DemoSection Eyebrow="Services" Title="Services via DI" Summary="Same data, direct injection.">
+    <div class="sample-definition-grid">
+        <div>
+            <dt>IBridge</dt>
+            <dd>@Bridge.Host / @Formatter.DescribePlatform(Bridge)</dd>
+        </div>
+        <div>
+            <dt>IBridgeFormFactor</dt>
+            <dd>@Formatter.DescribeFormFactor(FormFactor.FormFactor)</dd>
+        </div>
+        <div>
+            <dt>IBridgeConnectivity</dt>
+            <dd>@Formatter.DescribeConnectivity(Connectivity.IsConnected)</dd>
+        </div>
+        <div>
+            <dt>IBridgeTheme</dt>
+            <dd>@Formatter.DescribeTheme(Theme.Theme)</dd>
+        </div>
+        <div>
+            <dt>IBridgeSafeArea</dt>
+            <dd>@Formatter.DescribeSafeArea(SafeArea.SafeArea)</dd>
+        </div>
+    </div>
+</DemoSection>

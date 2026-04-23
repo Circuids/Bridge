@@ -1,0 +1,66 @@
+@page "/"
+@inject IBridge Bridge
+@inject IBridgeFormFactor FormFactor
+@inject IBridgeConnectivity Connectivity
+@inject IBridgeTheme Theme
+@inject IBridgeSafeArea SafeArea
+@inject SampleScenarioRegistry Registry
+@inject SampleDiagnosticsFormatter Formatter
+
+<PageTitle>Bridge Sample Overview</PageTitle>
+
+<section class="sample-hero">
+    <div class="sample-hero-copy">
+        <h1>One bridge. Shared UI. Live runtime.</h1>
+        <div class="sample-tag-row">
+            <StatusBadge Label="Blazor Server" Tone="sky" />
+            <StatusBadge Label="WebAssembly" Tone="accent" />
+            <StatusBadge Label="MAUI" Tone="warning" />
+        </div>
+        <div class="sample-hero-actions">
+            <a class="sample-hero-link" href="diagnostics">Open diagnostics</a>
+            <a class="sample-hero-link sample-hero-link-secondary" href="host-handlers">View host handlers</a>
+        </div>
+    </div>
+
+    <div class="sample-hero-panel">
+        <BridgeHost>
+            <Maui>
+                <p class="sample-callout">MAUI active.</p>
+            </Maui>
+            <Blazor>
+                <p class="sample-callout">Blazor active.</p>
+            </Blazor>
+            <Default>
+                <p class="sample-callout">Host active.</p>
+            </Default>
+        </BridgeHost>
+
+        <div class="sample-hero-meter">
+            <div>
+                <span class="sample-eyebrow">Host</span>
+                <strong>@Bridge.Host</strong>
+            </div>
+            <div>
+                <span class="sample-eyebrow">Platform</span>
+                <strong>@Bridge.Platform</strong>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="sample-card-grid">
+    <DemoCard Eyebrow="Host" Title="@Bridge.Host.ToString()" Summary="@Formatter.DescribePlatform(Bridge)" />
+    <DemoCard Eyebrow="Form factor" Title="@FormFactor.FormFactor.FormFactor.ToString()" Summary="@Formatter.DescribeFormFactor(FormFactor.FormFactor)" />
+    <DemoCard Eyebrow="Connectivity" Title="@(Connectivity.IsConnected ? "Online" : "Offline")" Summary="@($"Theme {Theme.Theme}")" />
+    <DemoCard Eyebrow="Safe area" Title="@(SafeArea.SafeArea.HasInsets ? "Insets detected" : "Flush edges")" Summary="@Formatter.DescribeSafeArea(SafeArea.SafeArea)" />
+</section>
+
+<DemoSection Title="Scenario map">
+    <div class="sample-card-grid">
+        @foreach (var scenario in Registry.Scenarios)
+        {
+            <DemoCard Eyebrow="@scenario.Eyebrow" Title="@scenario.Title" Href="@scenario.Route" />
+        }
+    </div>
+</DemoSection>

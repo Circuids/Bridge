@@ -1,3 +1,5 @@
+using Circuids.Bridge.Blazor;
+using Circuids.Bridge.Shared.Sample;
 using Circuids.Bridge.Blazor.Server.Sample.Components;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -5,6 +7,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+builder.Services.AddBridgeForBlazor();
+builder.Services.AddBridgeSharedSample();
 
 var app = builder.Build();
 
@@ -22,6 +26,7 @@ app.UseAntiforgery();
 
 app.MapStaticAssets();
 app.MapRazorComponents<App>()
-    .AddInteractiveServerRenderMode();
+    .AddInteractiveServerRenderMode()
+    .AddAdditionalAssemblies(typeof(SharedSampleApp).Assembly);
 
 app.Run();

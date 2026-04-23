@@ -1,0 +1,28 @@
+@page "/platform-detection"
+@inject IBridge Bridge
+@inject SampleDiagnosticsFormatter Formatter
+
+<PageTitle>Platform Detection</PageTitle>
+
+<DemoSection Eyebrow="Platform" Title="Platform detection" Summary="OS-specific fragments from one shared page.">
+    <div class="sample-tag-row">
+        <StatusBadge Label="Android" Tone="sky" />
+        <StatusBadge Label="iOS" Tone="accent" />
+        <StatusBadge Label="Windows" Tone="warning" />
+        <StatusBadge Label="Mac" Tone="soft" />
+        <StatusBadge Label="Linux" Tone="neutral" />
+    </div>
+    <BridgePlatform>
+        <Android><p class="sample-callout">Android active.</p></Android>
+        <IOS><p class="sample-callout">iOS active.</p></IOS>
+        <Windows><p class="sample-callout">Windows active.</p></Windows>
+        <Mac><p class="sample-callout">macOS active.</p></Mac>
+        <Linux><p class="sample-callout">Linux active.</p></Linux>
+        <Default><p class="sample-callout">Platform unresolved.</p></Default>
+    </BridgePlatform>
+</DemoSection>
+
+<section class="sample-card-grid">
+    <DemoCard Eyebrow="Current platform" Title="@Bridge.Platform.ToString()" Summary="@Formatter.DescribePlatform(Bridge)" />
+    <DemoCard Eyebrow="Version" Title="@Bridge.PlatformVersion" Summary="Resolved after provider init" />
+</section>

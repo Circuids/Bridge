@@ -1,0 +1,25 @@
+<BridgeProvider FormFactorResizeMode="ResizeMode.Global"
+                ConnectivityOptions="@connectivityOptions">
+    <Router AppAssembly="typeof(SharedSampleApp).Assembly">
+        <Found Context="routeData">
+            <RouteView RouteData="routeData" DefaultLayout="typeof(SampleMainLayout)" />
+            <FocusOnNavigate RouteData="routeData" Selector="h1" />
+        </Found>
+        <NotFound>
+            <LayoutView Layout="typeof(SampleMainLayout)">
+                <PageTitle>Bridge Sample</PageTitle>
+                <section class="sample-panel">
+                    <h1>Page not found</h1>
+                    <p>The requested sample route does not exist.</p>
+                </section>
+            </LayoutView>
+        </NotFound>
+    </Router>
+</BridgeProvider>
+
+@code {
+    private static readonly ConnectivityOptions connectivityOptions = new()
+    {
+        TestUrl = "/_content/Circuids.Bridge.Shared.Sample/sample.css"
+    };
+}

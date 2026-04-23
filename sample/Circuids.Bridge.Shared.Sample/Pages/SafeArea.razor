@@ -1,0 +1,18 @@
+@page "/safe-area"
+
+<PageTitle>Safe Area Insets</PageTitle>
+
+<DemoSection Eyebrow="Insets" Title="Safe area" Summary="Insets for edges, cutouts, and gesture zones.">
+    <BridgeSafeArea>
+        <div class="safe-area-frame" style="padding:@($"{context.Top}px {context.Right}px {context.Bottom}px {context.Left}px")">
+            <div class="safe-area-content">
+                <strong>Safe area content</strong>
+                <span>Top @context.Top | Right @context.Right | Bottom @context.Bottom | Left @context.Left</span>
+            </div>
+        </div>
+    </BridgeSafeArea>
+</DemoSection>
+
+<section class="sample-card-grid">
+    <DemoCard Eyebrow="Host requirement" Title="viewport-fit=cover" Summary="Needed for web safe-area reads" />
+</section>

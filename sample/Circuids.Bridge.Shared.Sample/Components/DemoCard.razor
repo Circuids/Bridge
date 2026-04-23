@@ -1,0 +1,36 @@
+@if (!string.IsNullOrWhiteSpace(Href))
+{
+    <a class="sample-list-item demo-card-link" href="@Href">
+        @RenderInner()
+    </a>
+}
+else
+{
+    <article class="sample-card">
+        @RenderInner()
+    </article>
+}
+
+@code {
+    [Parameter] public string? Eyebrow { get; set; }
+    [Parameter] public string Title { get; set; } = string.Empty;
+    [Parameter] public string? Summary { get; set; }
+    [Parameter] public string? Href { get; set; }
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    private RenderFragment RenderInner() => @<div class="demo-card-body">
+        @if (!string.IsNullOrWhiteSpace(Eyebrow))
+        {
+            <div class="sample-eyebrow">@Eyebrow</div>
+        }
+        <strong>@Title</strong>
+        @if (!string.IsNullOrWhiteSpace(Summary))
+        {
+            <span>@Summary</span>
+        }
+        @if (ChildContent is not null)
+        {
+            <div class="demo-card-extra">@ChildContent</div>
+        }
+    </div>;
+}

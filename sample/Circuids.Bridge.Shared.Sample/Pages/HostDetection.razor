@@ -1,0 +1,26 @@
+@page "/host-detection"
+@inject IBridge Bridge
+
+<PageTitle>Host Detection</PageTitle>
+
+<DemoSection Eyebrow="Host" Title="Host detection" Summary="BridgeHost swaps fragments for the active runtime.">
+    <div class="sample-tag-row">
+        <StatusBadge Label="Maui" Tone="accent" />
+        <StatusBadge Label="Blazor" Tone="sky" />
+        <StatusBadge Label="Wpf" Tone="soft" />
+        <StatusBadge Label="WinForms" Tone="soft" />
+    </div>
+
+    <BridgeHost>
+        <Maui><p class="sample-callout">MAUI branch active.</p></Maui>
+        <Blazor><p class="sample-callout">Blazor branch active.</p></Blazor>
+        <Wpf><p class="sample-callout">WPF branch slot.</p></Wpf>
+        <WinForms><p class="sample-callout">WinForms branch slot.</p></WinForms>
+        <Default><p class="sample-callout">Unknown host.</p></Default>
+    </BridgeHost>
+</DemoSection>
+
+<section class="sample-card-grid">
+    <DemoCard Eyebrow="Detected host" Title="@Bridge.Host.ToString()" Summary="Live runtime value" />
+    <DemoCard Eyebrow="Default baseline" Title="Blazor branch" Summary="Fallback for host handlers" />
+</section>

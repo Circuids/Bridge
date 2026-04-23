@@ -1,0 +1,23 @@
+@page "/connectivity"
+
+<PageTitle>Connectivity Monitoring</PageTitle>
+
+<DemoSection Eyebrow="Network" Title="Connectivity monitoring" Summary="Live online or offline state.">
+    <BridgeConnectivity @bind-IsConnected="isOnline">
+        <Online>
+            <p class="sample-callout">Online.</p>
+        </Online>
+        <Offline>
+            <p class="sample-callout">Offline.</p>
+        </Offline>
+    </BridgeConnectivity>
+</DemoSection>
+
+<section class="sample-card-grid">
+    <DemoCard Eyebrow="Current state" Title="@(isOnline ? "Online" : "Offline")" Summary="Polling on Blazor, native events on MAUI" />
+    <DemoCard Eyebrow="Live sync" Title="@isOnline.ToString()" Summary="Same value drives branch + card" />
+</section>
+
+@code {
+    private bool isOnline;
+}
