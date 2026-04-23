@@ -6,9 +6,12 @@
     <Project Path="../sample/Circuids.Bridge.Shared.Sample/Circuids.Bridge.Shared.Sample.csproj" Id="c1cc6a4a-a65e-4d47-a849-b62d17c93ae0" />
   </Folder>
   <Folder Name="/Source/">
-    <Project Path="Circuids.Bridge.Blazor/Circuids.Bridge.Blazor.csproj" />
-    <Project Path="Circuids.Bridge.Maui/Circuids.Bridge.Maui.csproj" />
-    <Project Path="Circuids.Bridge/Circuids.Bridge.csproj" />
+    <Project Path="Integrations/Circuids.Bridge.Blazor/Circuids.Bridge.Blazor.csproj" />
+    <Project Path="Integrations/Circuids.Bridge.Maui/Circuids.Bridge.Maui.csproj" />
+    <Project Path="Core/Circuids.Bridge/Circuids.Bridge.csproj" />
   </Folder>
-  <Folder Name="/Tests/" />
+  <Folder Name="/Tests/">
+    <Project Path="Tests/Circuids.Bridge.ComponentTests/Circuids.Bridge.ComponentTests.csproj" />
+    <Project Path="Tests/Circuids.Bridge.Tests/Circuids.Bridge.Tests.csproj" />
+  </Folder>
 </Solution>
