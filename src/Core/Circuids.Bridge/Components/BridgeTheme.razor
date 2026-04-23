@@ -1,0 +1,39 @@
+@namespace Circuids.Bridge
+@inject IBridgeTheme ThemeService
+@implements IDisposable
+
+@ChildContent?.Invoke(ThemeService.Theme)
+
+@if (ThemeService.Theme is ThemeMode.Light)
+{
+    @Light
+}
+else if (ThemeService.Theme is ThemeMode.Dark)
+{
+    @Dark
+}
+else
+{
+    @Default
+}
+
+@code {
+    [Parameter] public RenderFragment? Light { get; set; }
+    [Parameter] public RenderFragment? Dark { get; set; }
+    [Parameter] public RenderFragment? Default { get; set; }
+    [Parameter] public RenderFragment<ThemeMode>? ChildContent { get; set; }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            ThemeService.ThemeChanged += OnThemeChanged;
+            StateHasChanged();
+        }
+    }
+
+    private void OnThemeChanged(object? sender, ThemeMode e) =>
+        InvokeAsync(StateHasChanged);
+
+    public void Dispose() => ThemeService.ThemeChanged -= OnThemeChanged;
+}

@@ -1,0 +1,34 @@
+@namespace Circuids.Bridge
+@inject IBridge Bridge
+
+@ChildContent?.Invoke(Bridge.Host)
+
+@if (Bridge.Host is Host.Maui)
+{
+    @Maui
+}
+else if (Bridge.Host is Host.Blazor)
+{
+    @Blazor
+}
+else if (Bridge.Host is Host.Wpf)
+{
+    @Wpf
+}
+else if (Bridge.Host is Host.WinForms)
+{
+    @WinForms
+}
+else
+{
+    @Default
+}
+
+@code {
+    [Parameter] public RenderFragment? Maui { get; set; }
+    [Parameter] public RenderFragment? Blazor { get; set; }
+    [Parameter] public RenderFragment? Wpf { get; set; }
+    [Parameter] public RenderFragment? WinForms { get; set; }
+    [Parameter] public RenderFragment? Default { get; set; }
+    [Parameter] public RenderFragment<Host>? ChildContent { get; set; }
+}
