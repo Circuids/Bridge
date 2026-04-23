@@ -73,7 +73,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\src\Circuids.Bridge.Maui\Circuids.Bridge.Maui.csproj" />
+        <ProjectReference Include="..\..\src\Integrations\Circuids.Bridge.Maui\Circuids.Bridge.Maui.csproj" />
         <ProjectReference Include="..\Circuids.Bridge.Shared.Sample\Circuids.Bridge.Shared.Sample.csproj" />
     </ItemGroup>
 

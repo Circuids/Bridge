@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Circuids.Bridge\Circuids.Bridge.csproj" />
+    <ProjectReference Include="..\..\src\Core\Circuids.Bridge\Circuids.Bridge.csproj" />
   </ItemGroup>
 
 </Project>
