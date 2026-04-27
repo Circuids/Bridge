@@ -1,0 +1,10 @@
+1.0.0
+
+Initial stable release of the Bridge core package.
+
+- Added shared contracts for host/platform, form factor, connectivity, theme, and safe-area state.
+- Added Razor components for host, platform, responsive layout, connectivity, theme, and safe-area rendering.
+- Added BridgeProvider and individual feature providers for controlled initialization.
+- Added immutable value objects and enums for shared runtime state.
+- Added host handler abstractions for host-specific C# behavior from shared code.
+- Intended for shared Razor Class Libraries; install Circuids.Bridge.Blazor or Circuids.Bridge.Maui in host apps.
