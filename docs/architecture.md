@@ -234,7 +234,7 @@ MAUI adapters call MAUI APIs directly instead of wrapping them behind additional
 | `BridgeMaui` | `DeviceInfo.Platform`, `DeviceInfo.Version` |
 | `BridgeConnectivityMaui` | `Connectivity.NetworkAccess`, `Connectivity.ConnectivityChanged` |
 | `BridgeThemeMaui` | `Application.Current.RequestedTheme`, `RequestedThemeChanged` |
-| `BridgeFormFactorMaui` | `Application.Current.Windows`, `DeviceInfo.Idiom`, `MainThread` |
+| `BridgeFormFactorMaui` | `Application.Current.Windows`, `MainThread` |
 | `BridgeSafeAreaMaui` | Android window insets, iOS/Mac Catalyst `UIWindow.SafeAreaInsets` |
 
 Platform-specific `#if` code is allowed only inside the MAUI integration project. The core package and Blazor integration remain free of platform conditionals.
@@ -250,7 +250,7 @@ MAUI form factor uses a reference-counted listener model like the Blazor adapter
 | Host | `IBridge.Host` | Constant `Host.Blazor` | Constant `Host.Maui` |
 | Platform | `IBridge.Platform` | Browser detection through `Bridge.js` | `DeviceInfo.Platform` |
 | Version | `IBridge.PlatformVersion` | Browser version detection through `Bridge.js` | `DeviceInfo.Version` |
-| Form factor | `IBridgeFormFactor.FormFactor` | Viewport width and height | `DeviceInfo.Idiom` and current window size |
+| Form factor | `IBridgeFormFactor.FormFactor` | Viewport width and height | Current window width and height |
 | Connectivity | `IBridgeConnectivity.IsConnected` | `navigator.onLine` plus optional HEAD polling | `Connectivity.NetworkAccess` |
 | Theme | `IBridgeTheme.Theme` | `matchMedia('(prefers-color-scheme: dark)')` | `Application.Current.RequestedTheme` |
 | Safe area | `IBridgeSafeArea.SafeArea` | CSS safe-area environment variables | Android/iOS/Mac Catalyst native insets |
