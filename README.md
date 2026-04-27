@@ -334,12 +334,15 @@ Individual providers do not initialize `IBridge`. Use `BridgeProvider` when host
 - [Getting Started](docs/getting-started.md) - setup details for each host.
 - [Usage Guide](docs/usage.md) - complete component and service examples.
 - [API Reference](docs/api-reference.md) - interfaces, enums, records, components, providers, and handlers.
-- [Bridge Architecture](docs/architecture.md) - runtime structure, lifecycle, host integrations, and extension points.
-- [Testing Architecture](docs/testing-architecture.md) - unit, component and Pulse conformance strategy.
 
 ## Contributing
 
-Contributions are welcome. Please open an issue or submit a pull request with a clear description of the change and the behavior it affects.
+Contributions are welcome. Please open an issue or submit a pull request with a clear description of the change and the behavior it affects. For significant changes, please discuss the approach in an issue before implementing it and also add or update tests as needed.
+
+When contributing, please follow the existing code style and patterns. For new features, include unit tests for any new logic and consider adding component tests for any new rendering behavior. If the change affects public runtime behavior, add Pulse conformance cases to ensure it works correctly in real host apps.
+
+- Architecture: [docs/architecture.md](docs/architecture.md)
+- Testing: [docs/testing-architecture.md](docs/testing-architecture.md)
 
 ## License
 
