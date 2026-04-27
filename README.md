@@ -154,7 +154,9 @@ Start with the components when the answer changes what you render.
 ### Responsive Layout
 
 ```razor
-<BridgeFormFactor>
+<BridgeFormFactor Context="viewport">
+    <DashboardFrame Layout="viewport.FormFactor" Width="viewport.Width" Height="viewport.Height" />
+
     <Phone>
         <MobileDashboard />
     </Phone>
@@ -169,6 +171,8 @@ Start with the components when the answer changes what you render.
     </Default>
 </BridgeFormFactor>
 ```
+
+Plain child content receives the current component context. Named slots such as `Phone`, `Desktop`, `Online`, and `Dark` stay simple branch fragments and are used only for selecting what to render.
 
 `BridgeFormFactor` uses this fallback order:
 
@@ -201,8 +205,8 @@ Start with the components when the answer changes what you render.
     <Default><AppShell Theme="system" /></Default>
 </BridgeTheme>
 
-<BridgeSafeArea>
-    <div style="padding: @(context.Top)px @(context.Right)px @(context.Bottom)px @(context.Left)px">
+<BridgeSafeArea Context="safeArea">
+    <div style="padding: @(safeArea.Top)px @(safeArea.Right)px @(safeArea.Bottom)px @(safeArea.Left)px">
         <MainShell />
     </div>
 </BridgeSafeArea>
@@ -212,6 +216,38 @@ For web safe-area insets, add `viewport-fit=cover` to the app host page:
 
 ```html
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+```
+
+### Bind To Component State
+
+`BridgeFormFactor` and `BridgeConnectivity` can push their current state into fields with normal Blazor binding.
+
+```razor
+<BridgeFormFactor @bind-FormFactor="currentFormFactor">
+    <Desktop>
+        <DesktopDashboard />
+    </Desktop>
+    <Default>
+        <CompactDashboard />
+    </Default>
+</BridgeFormFactor>
+
+<BridgeConnectivity @bind-IsConnected="isConnected">
+    <Online>
+        <SyncStatus />
+    </Online>
+    <Offline>
+        <OfflineBanner />
+    </Offline>
+</BridgeConnectivity>
+
+<p>@currentFormFactor.FormFactor</p>
+<p>@(isConnected ? "Online" : "Offline")</p>
+
+@code {
+    private FormFactorInfo currentFormFactor = FormFactorInfo.Unknown();
+    private bool isConnected;
+}
 ```
 
 ## Use It In C#
