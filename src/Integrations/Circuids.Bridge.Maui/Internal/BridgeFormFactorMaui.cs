@@ -18,6 +18,7 @@ internal sealed class BridgeFormFactorMaui : IBridgeFormFactor
         _resizeMode = resizeMode;
         FormFactor = GetFormFactor();
         _isInitialized = true;
+        FormFactorChanged?.Invoke(this, FormFactor);
 
         if (resizeMode is ResizeMode.Global)
             await CreateListenerAsync();

@@ -18,6 +18,7 @@ internal sealed class BridgeThemeMaui : IBridgeTheme
             Application.Current.RequestedThemeChanged += OnRequestedThemeChanged;
 
         _isInitialized = true;
+        ThemeChanged?.Invoke(this, Theme);
         return Task.CompletedTask;
     }
 

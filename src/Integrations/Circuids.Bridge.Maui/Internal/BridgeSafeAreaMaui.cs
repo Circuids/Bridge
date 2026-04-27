@@ -14,6 +14,8 @@ internal sealed class BridgeSafeAreaMaui : IBridgeSafeArea
 
         SafeArea = GetSafeAreaInsets();
         _isInitialized = true;
+        SafeAreaChanged?.Invoke(this, SafeArea);
+
         return Task.CompletedTask;
     }
 
