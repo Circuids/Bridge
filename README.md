@@ -5,8 +5,7 @@
 <div align="center">
 
 [![NuGet](https://img.shields.io/nuget/v/Circuids.Bridge.svg)](https://nuget.org/packages/Circuids.Bridge/)
-[![NuGet Downloads](https://img.shields.io/nuget/dt/Circuids.Bridge.svg)](https://nuget.org/packages/Circuids.Bridge/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/Circuids/Bridge/blob/master/LICENSE)
 
 </div>
 
@@ -350,7 +349,7 @@ Bridge is the production successor to [MauiBlazorBridge](https://github.com/Aath
 
 ## License
 
-Bridge is licensed under the [MIT License](https://github.com/Circuids/Bridge/blob/main/LICENSE).
+Bridge is licensed under the [MIT License](https://github.com/Circuids/Bridge/blob/master/LICENSE).
 
 ## Sponsoring
 
