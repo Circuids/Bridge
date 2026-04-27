@@ -44,8 +44,6 @@ The intentionally separate projects are:
 - `Circuids.Bridge.Tests`
 - `Circuids.Bridge.TestSupport`
 - `Circuids.Bridge.Component.Tests`
-- `Circuids.Bridge.Blazor.Tests`
-- `Circuids.Bridge.Maui.Tests`
 - `Circuids.Bridge.Blazor.Conformance.Tests`
 - `Circuids.Bridge.Maui.Conformance.Tests`
 
@@ -286,9 +284,6 @@ The current MAUI Pulse app contains 58 conformance cases during the normal green
 |----------|-----------|
 | Pure enum/value object/handler behavior | `Circuids.Bridge.Tests` |
 | Razor slot selection or rerendering | `Circuids.Bridge.Component.Tests` |
-| Blazor JS interop call shape | `Circuids.Bridge.Blazor.Tests` |
-| MAUI DI registration or Windows-hosted Essentials behavior | `Circuids.Bridge.Maui.Tests` |
-| Public non-rendering runtime contract inside a real host app | Blazor or MAUI conformance host |
 | Browser runtime behavior | `Circuids.Bridge.Blazor.Conformance.Tests` |
 | Device/emulator MAUI behavior | `Circuids.Bridge.Maui.Conformance.Tests` |
 | Shared fake, registration inspector, or runtime probe | `Circuids.Bridge.TestSupport` |
@@ -304,9 +299,8 @@ When adding a new test, choose the lowest layer that can prove the behavior.
 
 1. If the behavior is pure .NET and host-independent, add or extend unit tests first.
 2. If the behavior is Razor rendering, add component tests.
-3. If the behavior is adapter call shape, add Blazor or MAUI adapter tests.
-4. If the behavior depends on browser/device runtime APIs, add Pulse conformance.
-5. If the behavior is a public non-rendering runtime invariant that should hold inside each real host app, add matching Pulse conformance cases for Blazor and MAUI.
+3. If the behavior depends on browser/device runtime APIs, add Pulse conformance.
+4. If the behavior is a public non-rendering runtime invariant that should hold inside each real host app, add matching Pulse conformance cases for Blazor and MAUI.
 
 For a new Pulse conformance case:
 
