@@ -1,8 +1,9 @@
 namespace Circuids.Bridge.Maui.Internal;
 
-internal sealed class BridgeSafeAreaMaui : IBridgeSafeArea
+internal sealed class BridgeSafeAreaMaui : IBridgeSafeArea, IDisposable
 {
     private bool _isInitialized;
+    private bool _isWindowSizeListenerAttached;
 
     public SafeAreaInsets SafeArea { get; private set; } = SafeAreaInsets.Zero;
 
@@ -14,9 +15,49 @@ internal sealed class BridgeSafeAreaMaui : IBridgeSafeArea
 
         SafeArea = GetSafeAreaInsets();
         _isInitialized = true;
+        MainThread.BeginInvokeOnMainThread(AttachWindowSizeListener);
         SafeAreaChanged?.Invoke(this, SafeArea);
 
         return Task.CompletedTask;
+    }
+
+    private void OnWindowSizeChanged(object? sender, EventArgs e)
+    {
+        var insets = GetSafeAreaInsets();
+
+        if (SafeArea != insets)
+        {
+            SafeArea = insets;
+            SafeAreaChanged?.Invoke(this, insets);
+        }
+    }
+
+    public void Dispose()
+    {
+        if (_isInitialized)
+        {
+            MainThread.BeginInvokeOnMainThread(DetachWindowSizeListener);
+            _isInitialized = false;
+        }
+    }
+
+    private void AttachWindowSizeListener()
+    {
+        if (_isWindowSizeListenerAttached) return;
+        if (Application.Current is null || Application.Current.Windows.Count is 0) return;
+
+        Application.Current.Windows[0].SizeChanged += OnWindowSizeChanged;
+        _isWindowSizeListenerAttached = true;
+    }
+
+    private void DetachWindowSizeListener()
+    {
+        if (!_isWindowSizeListenerAttached) return;
+
+        if (Application.Current is not null && Application.Current.Windows.Count > 0)
+            Application.Current.Windows[0].SizeChanged -= OnWindowSizeChanged;
+
+        _isWindowSizeListenerAttached = false;
     }
 
     private static SafeAreaInsets GetSafeAreaInsets()

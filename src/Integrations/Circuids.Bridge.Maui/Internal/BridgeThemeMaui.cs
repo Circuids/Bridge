@@ -1,6 +1,6 @@
 namespace Circuids.Bridge.Maui.Internal;
 
-internal sealed class BridgeThemeMaui : IBridgeTheme
+internal sealed class BridgeThemeMaui : IBridgeTheme, IDisposable
 {
     private bool _isInitialized;
 
@@ -46,4 +46,13 @@ internal sealed class BridgeThemeMaui : IBridgeTheme
         AppTheme.Dark => ThemeMode.Dark,
         _ => ThemeMode.Unknown,
     };
+
+    public void Dispose()
+    {
+        if (_isInitialized && Application.Current is not null)
+        {
+            Application.Current.RequestedThemeChanged -= OnRequestedThemeChanged;
+            _isInitialized = false;
+        }
+    }
 }

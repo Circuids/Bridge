@@ -1,8 +1,10 @@
 namespace Circuids.Bridge.Maui.Internal;
 
-internal sealed class BridgeFormFactorMaui : IBridgeFormFactor
+internal sealed class BridgeFormFactorMaui : IBridgeFormFactor, IDisposable
 {
     private bool _isInitialized;
+    private bool _isDisposed;
+    private bool _isWindowSizeListenerAttached;
     private int _listenerCount;
     private CancellationTokenSource _cts = new();
     private ResizeMode _resizeMode = ResizeMode.None;
@@ -39,11 +41,7 @@ internal sealed class BridgeFormFactorMaui : IBridgeFormFactor
             return Task.CompletedTask;
         }
 
-        MainThread.BeginInvokeOnMainThread(() =>
-        {
-            if (Application.Current is null || Application.Current.Windows.Count is 0) return;
-            Application.Current.Windows[0].SizeChanged += OnWindowSizeChanged;
-        });
+        MainThread.BeginInvokeOnMainThread(AttachWindowSizeListener);
 
         _listenerCount++;
         return Task.CompletedTask;
@@ -51,21 +49,9 @@ internal sealed class BridgeFormFactorMaui : IBridgeFormFactor
 
     private void OnWindowSizeChanged(object? sender, EventArgs e)
     {
-        if (Application.Current is null || Application.Current.Windows.Count is 0) return;
+        var newInfo = GetFormFactor();
 
-        var width = Application.Current.Windows[0].Width;
-        var height = Application.Current.Windows[0].Height;
-
-        FormFactorInfo newInfo;
-
-        if (width <= 767)
-            newInfo = new FormFactorInfo(Bridge.FormFactor.Phone, width, height);
-        else if (width <= 1023)
-            newInfo = new FormFactorInfo(Bridge.FormFactor.Tablet, width, height);
-        else
-            newInfo = new FormFactorInfo(Bridge.FormFactor.Desktop, width, height);
-
-        if (newInfo.FormFactor != FormFactor.FormFactor)
+        if (newInfo != FormFactor)
         {
             FormFactor = newInfo;
             FormFactorChanged?.Invoke(this, newInfo);
@@ -82,11 +68,7 @@ internal sealed class BridgeFormFactorMaui : IBridgeFormFactor
             {
                 await Task.Delay(TimeSpan.FromSeconds(5), _cts.Token);
 
-                MainThread.BeginInvokeOnMainThread(() =>
-                {
-                    if (Application.Current is null || Application.Current.Windows.Count is 0) return;
-                    Application.Current.Windows[0].SizeChanged -= OnWindowSizeChanged;
-                });
+                MainThread.BeginInvokeOnMainThread(DetachWindowSizeListener);
 
                 _listenerCount = 0;
             }
@@ -97,13 +79,30 @@ internal sealed class BridgeFormFactorMaui : IBridgeFormFactor
         }
         catch (TaskCanceledException)
         {
-            _listenerCount--;
+            if (_listenerCount > 0)
+                _listenerCount--;
         }
+    }
+
+    public void Dispose()
+    {
+        if (_isDisposed) return;
+
+        _cts.Cancel();
+        _cts.Dispose();
+
+        if (_listenerCount > 0 && _resizeMode is not ResizeMode.Once)
+            MainThread.BeginInvokeOnMainThread(DetachWindowSizeListener);
+
+        _listenerCount = 0;
+        _isInitialized = false;
+        _isDisposed = true;
     }
 
     private void CancelPendingDispose()
     {
         _cts.Cancel();
+        _cts.Dispose();
         _cts = new();
     }
 
@@ -115,13 +114,35 @@ internal sealed class BridgeFormFactorMaui : IBridgeFormFactor
         var width = Application.Current.Windows[0].Width;
         var height = Application.Current.Windows[0].Height;
 
-        if (DeviceInfo.Idiom == DeviceIdiom.Phone)
-            return new FormFactorInfo(Bridge.FormFactor.Phone, width, height);
-        if (DeviceInfo.Idiom == DeviceIdiom.Tablet)
-            return new FormFactorInfo(Bridge.FormFactor.Tablet, width, height);
-        if (DeviceInfo.Idiom == DeviceIdiom.Desktop)
-            return new FormFactorInfo(Bridge.FormFactor.Desktop, width, height);
+        return CreateFormFactorInfo(width, height);
+    }
 
-        return FormFactorInfo.Unknown();
+    private static FormFactorInfo CreateFormFactorInfo(double width, double height)
+    {
+        if (width <= 767)
+            return new FormFactorInfo(Bridge.FormFactor.Phone, width, height);
+        if (width <= 1023)
+            return new FormFactorInfo(Bridge.FormFactor.Tablet, width, height);
+
+        return new FormFactorInfo(Bridge.FormFactor.Desktop, width, height);
+    }
+
+    private void AttachWindowSizeListener()
+    {
+        if (_isWindowSizeListenerAttached) return;
+        if (Application.Current is null || Application.Current.Windows.Count is 0) return;
+
+        Application.Current.Windows[0].SizeChanged += OnWindowSizeChanged;
+        _isWindowSizeListenerAttached = true;
+    }
+
+    private void DetachWindowSizeListener()
+    {
+        if (!_isWindowSizeListenerAttached) return;
+
+        if (Application.Current is not null && Application.Current.Windows.Count > 0)
+            Application.Current.Windows[0].SizeChanged -= OnWindowSizeChanged;
+
+        _isWindowSizeListenerAttached = false;
     }
 }
