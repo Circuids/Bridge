@@ -1,0 +1,10 @@
+1.0.0
+
+Initial stable release of the Bridge Blazor host package.
+
+- Added AddBridgeForBlazor for Blazor WebAssembly and Blazor Server apps.
+- Added browser-backed implementations for host/platform, form factor, connectivity, theme, and safe-area services.
+- Added ES module based JavaScript interop for runtime detection and change notifications.
+- Supports component-driven responsive rendering, online/offline UI, theme-aware UI, and web safe-area insets.
+- Handles Blazor Server circuit disconnects during JS interop disposal.
+- References Circuids.Bridge transitively, so host apps do not need to install the core package separately.

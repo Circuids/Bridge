@@ -7,6 +7,36 @@
     <RootNamespace>Circuids.Bridge.Blazor</RootNamespace>
   </PropertyGroup>
 
+  <PropertyGroup>
+		<Title>Bridge - Blazor</Title>
+		<PackageIcon>icon.png</PackageIcon>
+		<AssemblyVersion>1.0.0.0</AssemblyVersion>
+		<AssemblyFileVersion>1.0.0.0</AssemblyFileVersion>
+		<Version>1.0.0</Version>
+		<Product>$(AssemblyName) ($(TargetFramework))</Product>
+		<PackageVersion>$(Version)$(VersionSuffix)</PackageVersion>
+		<UseFullSemVerForNuGet>false</UseFullSemVerForNuGet>
+		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+		<Authors>Aathif Mahir</Authors>
+		<Owners>Aathif Mahir</Owners>
+		<NeutralLanguage>en</NeutralLanguage>
+		<DefineConstants>$(DefineConstants);</DefineConstants>
+		<Configurations>Debug;Release</Configurations>
+		<GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+		<GitInfoReportImportance>high</GitInfoReportImportance>
+		<PackageReleaseNotes>$([System.IO.File]::ReadAllText("$(MSBuildProjectDirectory)/ReleaseNotes.txt"))</PackageReleaseNotes>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageProjectUrl>https://github.com/Circuids/Bridge</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/Circuids/Bridge</RepositoryUrl>
+		<Copyright>© Circuids. All rights reserved.</Copyright>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+	</PropertyGroup>
+
+  <ItemGroup>
+		<None Include="README.md" Pack="true" PackagePath="\" />
+		<None Include="..\..\..\images\icon.png" PackagePath="icon.png" Pack="true" />
+	</ItemGroup>
+
   <ItemGroup>
     <SupportedPlatform Include="browser" />
   </ItemGroup>
