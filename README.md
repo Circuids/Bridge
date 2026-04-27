@@ -344,6 +344,10 @@ When contributing, please follow the existing code style and patterns. For new f
 - Architecture: [docs/architecture.md](docs/architecture.md)
 - Testing: [docs/testing-architecture.md](docs/testing-architecture.md)
 
+## Background
+
+Bridge is the production successor to [MauiBlazorBridge](https://github.com/AathifMahir/MauiBlazorBridge), an earlier experimental package by the same author. That package is now archived. Bridge was written from the ground up as a stable, production-ready implementation of the same concept.
+
 ## License
 
 Bridge is licensed under the [MIT License](https://github.com/Circuids/Bridge/blob/main/LICENSE).
