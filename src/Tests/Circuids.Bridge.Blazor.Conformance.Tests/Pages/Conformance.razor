@@ -1,0 +1,189 @@
+@page "/"
+@page "/conformance"
+@implements IAsyncDisposable
+@inject ITestExecutor Executor
+@inject IJSRuntime JS
+@inject NavigationManager Navigation
+@inject ConformanceFailureSentinelState FailureSentinel
+@inject ConformanceLongRunningState LongRunning
+@inject ConformanceObservationStore Observations
+
+<PageTitle>Bridge Blazor Conformance</PageTitle>
+
+<main class="shell">
+    <h1>Bridge Blazor Conformance</h1>
+
+    <button class="run-button" @onclick="RunAsync" disabled="@_running">
+        @(_running ? "Running" : _report is null ? "Run conformance" : "Re-run")
+    </button>
+
+    <label class="failure-toggle">
+        <input type="checkbox" @bind="_forceFailureSentinel" disabled="@_running" />
+        <span>Force failure sentinel</span>
+    </label>
+
+    <label class="failure-toggle">
+        <input type="checkbox" @bind="_enableLongRunning" disabled="@_running" />
+        <span>Long-running observations</span>
+    </label>
+
+    <label class="duration-input">
+        <span>Seconds</span>
+        <input type="number" min="5" max="60" @bind="_longRunningSeconds" disabled="@_running" />
+    </label>
+
+    @if (_report is not null)
+    {
+        <section class="summary" data-success="@_report.Success.ToString().ToLowerInvariant()">
+            <strong>@(_report.Success ? "PASS" : "FAIL")</strong>
+            <span>@_report.Total total</span>
+            <span>@_report.Passed passed</span>
+            <span>@_report.Failed failed</span>
+            <span>@_report.Skipped skipped</span>
+        </section>
+
+        <dl class="environment">
+            <dt>Assigned platform</dt>
+            <dd>@_report.AssignedPlatform</dd>
+            <dt>Framework</dt>
+            <dd>@_report.RuntimeEnvironment.FrameworkDescription</dd>
+            <dt>Runtime ID</dt>
+            <dd>@_report.RuntimeEnvironment.RuntimeIdentifier</dd>
+            <dt>OS</dt>
+            <dd>@_report.RuntimeEnvironment.OSDescription</dd>
+        </dl>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Outcome</th>
+                    <th>Suite</th>
+                    <th>Test</th>
+                    <th>Duration</th>
+                    <th>Message</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var result in _report.Results)
+                {
+                    <tr class="@result.Outcome.ToString().ToLowerInvariant()">
+                        <td>@result.Outcome</td>
+                        <td>@ShortSuite(result.SuiteName)</td>
+                        <td>@result.TestName</td>
+                        <td>@result.Duration.TotalMilliseconds.ToString("0") ms</td>
+                        <td>@result.Message</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <details>
+            <summary>Raw JSON report</summary>
+            <pre>@_reportJson</pre>
+        </details>
+
+        @if (!string.IsNullOrWhiteSpace(_observationSummary))
+        {
+            <details open>
+                <summary>Long-running observations</summary>
+                <pre>@_observationSummary</pre>
+            </details>
+        }
+    }
+</main>
+
+@code {
+    private IJSObjectReference? _module;
+    private TestRunReport? _report;
+    private string? _reportJson;
+    private bool _running;
+    private bool _autorunStarted;
+    private bool _forceFailureSentinel;
+    private bool _enableLongRunning;
+    private int _longRunningSeconds = 15;
+    private string? _observationSummary;
+
+    protected override void OnInitialized()
+    {
+        _forceFailureSentinel = IsQueryFlagEnabled("failSentinel") || IsQueryFlagEnabled("fail");
+        _enableLongRunning = IsQueryFlagEnabled("longRun") || IsQueryFlagEnabled("longRunning");
+        _longRunningSeconds = GetQueryInt("longRunSeconds", defaultValue: 15, minValue: 5, maxValue: 60);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender || _autorunStarted || !IsAutorun())
+        {
+            return;
+        }
+
+        _autorunStarted = true;
+        await RunAsync();
+    }
+
+    private async Task RunAsync()
+    {
+        _running = true;
+        try
+        {
+            FailureSentinel.IsEnabled = _forceFailureSentinel;
+            LongRunning.IsEnabled = _enableLongRunning;
+            LongRunning.ObservationDuration = TimeSpan.FromSeconds(Math.Clamp(_longRunningSeconds, 5, 60));
+            Observations.Clear();
+            _observationSummary = null;
+
+            _report = await Executor.RunAsync();
+            _observationSummary = Observations.FormatSummary();
+            _reportJson = JsonSerializer.Serialize(_report, PulseJsonContext.Default.TestRunReport);
+            _module ??= await JS.InvokeAsync<IJSObjectReference>("import", "./bridgePulseInterop.js");
+            await _module.InvokeVoidAsync("publishReport", _reportJson);
+        }
+        finally
+        {
+            _running = false;
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private bool IsAutorun()
+    {
+        return IsQueryFlagEnabled("autorun");
+    }
+
+    private bool IsQueryFlagEnabled(string name)
+    {
+        var query = Navigation.ToAbsoluteUri(Navigation.Uri).Query;
+        return query.Contains($"{name}=1", StringComparison.OrdinalIgnoreCase)
+            || query.Contains($"{name}=true", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private int GetQueryInt(string name, int defaultValue, int minValue, int maxValue)
+    {
+        var query = Navigation.ToAbsoluteUri(Navigation.Uri).Query.TrimStart('?');
+        foreach (var pair in query.Split('&', StringSplitOptions.RemoveEmptyEntries))
+        {
+            var parts = pair.Split('=', 2);
+            if (parts.Length != 2 || !string.Equals(parts[0], name, StringComparison.OrdinalIgnoreCase))
+                continue;
+
+            if (int.TryParse(parts[1], out var value))
+                return Math.Clamp(value, minValue, maxValue);
+        }
+
+        return defaultValue;
+    }
+
+    private static string ShortSuite(string suiteName)
+    {
+        var index = suiteName.LastIndexOf('.');
+        return index >= 0 ? suiteName[(index + 1)..] : suiteName;
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_module is not null)
+        {
+            await _module.DisposeAsync();
+        }
+    }
+}
