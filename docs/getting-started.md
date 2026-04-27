@@ -237,3 +237,5 @@ Without this, browsers don't expose safe area insets and all values will be `0`.
 
 - [Usage Guide](usage.md) — Components, DI injection, handlers, and patterns
 - [API Reference](api-reference.md) — Full interface and type documentation
+- [Bridge Architecture](architecture.md) — Runtime structure, service lifecycle, and extension points
+- [Testing Architecture](testing-architecture.md) — Unit, component, adapter, and Pulse conformance strategy
