@@ -354,4 +354,4 @@ Bridge is licensed under the [MIT License](https://github.com/Circuids/Bridge/bl
 
 ## Sponsoring
 
-If Bridge helps your work, you can support ongoing maintenance through [GitHub Sponsors](https://github.com/sponsors/Circuids).
+If you find this project useful and would like to support its continued development, consider [becoming a sponsor](https://github.com/sponsors/Circuids). Your contributions are instrumental in keeping this project maintained and growing. Thank you for your support.
