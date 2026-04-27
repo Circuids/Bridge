@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Circuids.Bridge.Maui.Conformance.Tests.MainPage"
+             Title="Bridge MAUI Conformance">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="14">
+            <Label Text="Bridge MAUI Conformance"
+                   FontSize="24"
+                   FontAttributes="Bold" />
+
+            <Button x:Name="RunButton"
+                    Text="Run conformance"
+                    Clicked="OnRunClicked" />
+
+            <HorizontalStackLayout Spacing="8">
+                <CheckBox x:Name="FailureSentinelCheckBox" />
+                <Label Text="Force failure sentinel"
+                       VerticalTextAlignment="Center" />
+            </HorizontalStackLayout>
+
+            <HorizontalStackLayout Spacing="8">
+                <CheckBox x:Name="LongRunningCheckBox" />
+                <Label Text="Long-running observations"
+                       VerticalTextAlignment="Center" />
+                <Entry x:Name="LongRunningSecondsEntry"
+                       Text="15"
+                       WidthRequest="72"
+                       Keyboard="Numeric" />
+                <Label Text="seconds"
+                       VerticalTextAlignment="Center" />
+            </HorizontalStackLayout>
+
+            <Label x:Name="SummaryLabel"
+                   FontAttributes="Bold" />
+
+            <Label x:Name="EnvironmentLabel"
+                   FontSize="12" />
+
+            <CollectionView x:Name="ResultsView">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Padding="0,6"
+                              ColumnDefinitions="84,*,84"
+                              ColumnSpacing="8"
+                              RowDefinitions="Auto,Auto">
+                            <Label Grid.Row="0"
+                                   Grid.Column="0"
+                                   Text="{Binding Outcome}"
+                                   FontAttributes="Bold" />
+                            <Label Grid.Row="0"
+                                   Grid.Column="1"
+                                   Text="{Binding TestName}" />
+                            <Label Grid.Row="0"
+                                   Grid.Column="2"
+                                   HorizontalTextAlignment="End"
+                                   Text="{Binding DurationText}" />
+                            <Label Grid.Row="1"
+                                   Grid.Column="1"
+                                   Grid.ColumnSpan="2"
+                                   Text="{Binding Message}"
+                                   FontSize="11"
+                                   IsVisible="{Binding HasMessage}" />
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <Editor x:Name="ReportJsonEditor"
+                    AutoSize="TextChanges"
+                    IsReadOnly="True"
+                    FontSize="11" />
+
+           <Editor x:Name="ObservationEditor"
+                  AutoSize="TextChanges"
+                  IsReadOnly="True"
+                  FontSize="11" />
+            
+            <Button HorizontalOptions="Center" Margin="12,12" Text="Throw" x:Name="ThrowButton" Clicked="ThrowButton_Clicked" />
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>
