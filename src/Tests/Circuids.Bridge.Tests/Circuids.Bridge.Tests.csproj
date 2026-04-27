@@ -17,12 +17,11 @@
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.4.0" />
 		<PackageReference Include="xunit.v3" Version="3.2.2" />
 		<PackageReference Include="xunit.runner.visualstudio" Version="3.1.5" />
-		<PackageReference Include="Microsoft.JSInterop" Version="10.0.6" />
 	</ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Circuids.Bridge\Circuids.Bridge.csproj" />
-    <ProjectReference Include="..\..\Integrations\Circuids.Bridge.Blazor\Circuids.Bridge.Blazor.csproj" />
+    <ProjectReference Include="..\Circuids.Bridge.TestSupport\Circuids.Bridge.TestSupport.csproj" />
   </ItemGroup>
 
 </Project>
