@@ -1,4 +1,5 @@
-using Circuids.Bridge.Tests.Fakes;
+using Circuids.Bridge.TestSupport.Fakes;
+using Circuids.Bridge.TestSupport.Handlers;
 
 namespace Circuids.Bridge.Tests.Core.Handlers;
 
@@ -10,7 +11,7 @@ public sealed class BridgeHostHandlerGenericTests
     public void Execute_ReturnsBlazorResult_WhenHostIsBlazor()
     {
         var bridge = new FakeBridge { Host = Host.Blazor };
-        var handler = new TrackedHandler(bridge);
+        var handler = new ReturningHostHandler(bridge);
 
         var result = handler.Execute();
 
@@ -21,7 +22,7 @@ public sealed class BridgeHostHandlerGenericTests
     public void Execute_ReturnsMauiResult_WhenHostIsMaui()
     {
         var bridge = new FakeBridge { Host = Host.Maui };
-        var handler = new TrackedHandler(bridge);
+        var handler = new ReturningHostHandler(bridge);
 
         var result = handler.Execute();
 
@@ -32,7 +33,7 @@ public sealed class BridgeHostHandlerGenericTests
     public void Execute_ReturnsWpfResult_WhenHostIsWpf()
     {
         var bridge = new FakeBridge { Host = Host.Wpf };
-        var handler = new TrackedHandler(bridge);
+        var handler = new ReturningHostHandler(bridge);
 
         var result = handler.Execute();
 
@@ -43,7 +44,7 @@ public sealed class BridgeHostHandlerGenericTests
     public void Execute_ReturnsWinFormsResult_WhenHostIsWinForms()
     {
         var bridge = new FakeBridge { Host = Host.WinForms };
-        var handler = new TrackedHandler(bridge);
+        var handler = new ReturningHostHandler(bridge);
 
         var result = handler.Execute();
 
@@ -56,7 +57,7 @@ public sealed class BridgeHostHandlerGenericTests
     public void Execute_ReturnsBlazorValue_WhenOnWpfNotOverridden()
     {
         var bridge = new FakeBridge { Host = Host.Wpf };
-        var handler = new BlazorOnlyHandler(bridge);
+        var handler = new BlazorOnlyReturningHostHandler(bridge);
 
         var result = handler.Execute();
 
@@ -67,7 +68,7 @@ public sealed class BridgeHostHandlerGenericTests
     public void Execute_ReturnsBlazorValue_WhenOnWinFormsNotOverridden()
     {
         var bridge = new FakeBridge { Host = Host.WinForms };
-        var handler = new BlazorOnlyHandler(bridge);
+        var handler = new BlazorOnlyReturningHostHandler(bridge);
 
         var result = handler.Execute();
 
@@ -78,7 +79,7 @@ public sealed class BridgeHostHandlerGenericTests
     public void Execute_ReturnsBlazorValue_WhenOnMauiNotOverridden()
     {
         var bridge = new FakeBridge { Host = Host.Maui };
-        var handler = new BlazorOnlyHandler(bridge);
+        var handler = new BlazorOnlyReturningHostHandler(bridge);
 
         var result = handler.Execute();
 
@@ -91,29 +92,11 @@ public sealed class BridgeHostHandlerGenericTests
     public void Execute_ThrowsBridgeException_WhenHostIsUnknown()
     {
         var bridge = new FakeBridge { Host = Host.Unknown };
-        var handler = new BlazorOnlyHandler(bridge);
+        var handler = new BlazorOnlyReturningHostHandler(bridge);
 
         var act = () => handler.Execute();
 
         Assert.Throws<BridgeException>(act);
     }
 
-    // ── Test helpers ──────────────────────────────────────────────────────────
-
-    private sealed class TrackedHandler : BridgeHostHandler<string>
-    {
-        public TrackedHandler(IBridge bridge) : base(bridge) { }
-
-        protected override string OnBlazor() => "Blazor";
-        protected override string OnMaui() => "Maui";
-        protected override string OnWpf() => "Wpf";
-        protected override string OnWinForms() => "WinForms";
-    }
-
-    private sealed class BlazorOnlyHandler : BridgeHostHandler<string>
-    {
-        public BlazorOnlyHandler(IBridge bridge) : base(bridge) { }
-
-        protected override string OnBlazor() => "Blazor";
-    }
 }

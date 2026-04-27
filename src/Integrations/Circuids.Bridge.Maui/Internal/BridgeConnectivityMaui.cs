@@ -15,6 +15,7 @@ internal sealed class BridgeConnectivityMaui : IBridgeConnectivity, IDisposable
         IsConnected = Connectivity.NetworkAccess == NetworkAccess.Internet;
         Connectivity.ConnectivityChanged += OnConnectivityChanged;
         _isInitialized = true;
+        ConnectionChanged?.Invoke(this, IsConnected);
 
         return Task.CompletedTask;
     }

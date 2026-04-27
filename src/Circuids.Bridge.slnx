@@ -11,7 +11,10 @@
     <Project Path="Core/Circuids.Bridge/Circuids.Bridge.csproj" />
   </Folder>
   <Folder Name="/Tests/">
-    <Project Path="Tests/Circuids.Bridge.ComponentTests/Circuids.Bridge.ComponentTests.csproj" />
+    <Project Path="Tests/Circuids.Bridge.Blazor.Conformance.Tests/Circuids.Bridge.Blazor.Conformance.Tests.csproj" />
+    <Project Path="Tests/Circuids.Bridge.Component.Tests/Circuids.Bridge.Component.Tests.csproj" />
+    <Project Path="Tests/Circuids.Bridge.Maui.Conformance.Tests/Circuids.Bridge.Maui.Conformance.Tests.csproj" />
     <Project Path="Tests/Circuids.Bridge.Tests/Circuids.Bridge.Tests.csproj" />
+    <Project Path="Tests/Circuids.Bridge.TestSupport/Circuids.Bridge.TestSupport.csproj" />
   </Folder>
 </Solution>

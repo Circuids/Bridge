@@ -51,6 +51,9 @@ internal sealed class BridgeFormFactorBlazor : IBridgeFormFactor, IAsyncDisposab
 
     public async Task CreateListenerAsync()
     {
+        if (!_isInitialized)
+            throw new BridgeException("BridgeFormFactor is not initialized. Ensure BridgeProvider is in the render tree.");
+
         if (_resizeMode is ResizeMode.Once) return;
 
         CancelPendingDispose();
@@ -66,8 +69,6 @@ internal sealed class BridgeFormFactorBlazor : IBridgeFormFactor, IAsyncDisposab
 
         await module.InvokeVoidAsync("initialize", _dotNetRef);
         _listenerCount++;
-
-        FormFactorChanged?.Invoke(this, FormFactor);
     }
 
     [JSInvokable]
@@ -113,21 +114,37 @@ internal sealed class BridgeFormFactorBlazor : IBridgeFormFactor, IAsyncDisposab
         {
             _listenerCount--;
         }
+        catch (JSDisconnectedException)
+        {
+            _listenerCount = 0;
+        }
     }
 
     public async ValueTask DisposeAsync()
     {
-        if (_moduleTask.IsValueCreated)
+        try
         {
-            var module = await _moduleTask.Value;
-
-            if (_listenerCount > 0 && _resizeMode is not ResizeMode.Once)
+            if (_moduleTask.IsValueCreated)
             {
-                await module.InvokeVoidAsync("dispose");
-            }
+                var module = await _moduleTask.Value;
 
+                if (_listenerCount > 0 && _resizeMode is not ResizeMode.Once)
+                {
+                    await module.InvokeVoidAsync("dispose");
+                }
+
+                await module.DisposeAsync();
+            }
+        }
+        catch (JSDisconnectedException)
+        {
+        }
+        finally
+        {
             _dotNetRef.Dispose();
-            await module.DisposeAsync();
+            _cts.Dispose();
+            _listenerCount = 0;
+            _isInitialized = false;
         }
     }
 
@@ -144,6 +161,7 @@ internal sealed class BridgeFormFactorBlazor : IBridgeFormFactor, IAsyncDisposab
     private void CancelPendingDispose()
     {
         _cts.Cancel();
+        _cts.Dispose();
         _cts = new();
     }
 }

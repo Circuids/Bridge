@@ -1,0 +1,10 @@
+1.0.0
+
+Initial stable release of the Bridge MAUI host package.
+
+- Added AddBridgeForMaui for MAUI Blazor Hybrid apps.
+- Added native MAUI implementations for host/platform, form factor, connectivity, theme, and safe-area services.
+- Uses MAUI device, connectivity, application theme, and window APIs instead of JavaScript interop.
+- Supports live form-factor and safe-area updates from MAUI window changes.
+- Supports native connectivity and theme change notifications with cleanup on disposal.
+- References Circuids.Bridge transitively, so host apps do not need to install the core package separately.

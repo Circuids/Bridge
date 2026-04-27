@@ -213,8 +213,10 @@ All components are in the `Circuids.Bridge` namespace.
 ### BridgeHostHandler\<T>
 
 ```csharp
-public abstract class BridgeHostHandler<T>(IBridge bridge)
+public abstract class BridgeHostHandler<T>
 {
+    protected BridgeHostHandler(IBridge bridge);
+
     protected abstract T OnBlazor();
     protected virtual T OnMaui() => OnBlazor();
     protected virtual T OnWpf() => OnBlazor();
@@ -227,8 +229,10 @@ public abstract class BridgeHostHandler<T>(IBridge bridge)
 ### BridgeHostHandler
 
 ```csharp
-public abstract class BridgeHostHandler(IBridge bridge)
+public abstract class BridgeHostHandler
 {
+    protected BridgeHostHandler(IBridge bridge);
+
     protected abstract void OnBlazor();
     protected virtual void OnMaui() => OnBlazor();
     protected virtual void OnWpf() => OnBlazor();
@@ -241,8 +245,10 @@ public abstract class BridgeHostHandler(IBridge bridge)
 ### BridgeHostHandlerAsync\<T>
 
 ```csharp
-public abstract class BridgeHostHandlerAsync<T>(IBridge bridge)
+public abstract class BridgeHostHandlerAsync<T>
 {
+    protected BridgeHostHandlerAsync(IBridge bridge);
+
     protected abstract Task<T> OnBlazor();
     protected virtual Task<T> OnMaui() => OnBlazor();
     protected virtual Task<T> OnWpf() => OnBlazor();
@@ -255,8 +261,10 @@ public abstract class BridgeHostHandlerAsync<T>(IBridge bridge)
 ### BridgeHostHandlerAsync
 
 ```csharp
-public abstract class BridgeHostHandlerAsync(IBridge bridge)
+public abstract class BridgeHostHandlerAsync
 {
+    protected BridgeHostHandlerAsync(IBridge bridge);
+
     protected abstract Task OnBlazor();
     protected virtual Task OnMaui() => OnBlazor();
     protected virtual Task OnWpf() => OnBlazor();

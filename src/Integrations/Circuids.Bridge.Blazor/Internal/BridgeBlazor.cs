@@ -41,10 +41,16 @@ internal sealed class BridgeBlazor : IBridge, IAsyncDisposable
 
     public async ValueTask DisposeAsync()
     {
-        if (_moduleTask.IsValueCreated)
+        try
         {
-            var module = await _moduleTask.Value;
-            await module.DisposeAsync();
+            if (_moduleTask.IsValueCreated)
+            {
+                var module = await _moduleTask.Value;
+                await module.DisposeAsync();
+            }
+        }
+        catch (JSDisconnectedException)
+        {
         }
     }
 }

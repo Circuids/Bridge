@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://github.com/Circuids/Bridge/blob/master/images/cover_logo_min.jpg?raw=true" alt="Bridge_logo" height=250 width=1000/>
+  <img src="https://github.com/Circuids/Bridge/blob/master/images/cover_logo_min.jpg?raw=true" alt="Bridge logo" height="250" width="1000" />
 </div>
 
 <div align="center">
@@ -12,87 +12,43 @@
 
 # Bridge
 
-**Bridge** detects host environments, form factors, connectivity, themes, and safe areas across Blazor and MAUI Blazor Hybrid -- from a single shared codebase.
+Bridge helps shared Razor UI adapt to the host it is running in. Use the same components and services in Blazor WebAssembly, Blazor Server, and MAUI Blazor Hybrid to answer practical runtime questions:
 
-**Write once, adapt everywhere** -- Clean component-based APIs, injectable services, and zero platform-specific `#if` directives in your shared UI code.
+- Am I running on the web or inside MAUI?
+- Is this Android, iOS, Windows, Mac, or Linux?
+- Should this layout behave like phone, tablet, or desktop?
+- Is the app online?
+- Is the user in light or dark mode?
+- Does the screen need safe-area padding for a notch, cutout, or gesture area?
 
-## Packages
+Bridge keeps those answers behind a small set of components and injectable services, so your shared UI does not need platform `#if` blocks.
 
-| Package | Description |
-|---------|-------------|
-| `Circuids.Bridge` | Core -- interfaces, components, enums. Install in shared Razor Class Libraries. |
-| `Circuids.Bridge.Blazor` | Blazor WASM and Blazor Server apps (JS interop implementations). |
-| `Circuids.Bridge.Maui` | MAUI Blazor Hybrid apps (native platform implementations). |
+## Choose A Package
 
-> `Circuids.Bridge.Blazor` and `Circuids.Bridge.Maui` both reference `Circuids.Bridge` transitively -- you don't need to install the core package separately in host projects.
+Install the host package in the app that runs your UI:
 
-## Features
+| App type | Install |
+|----------|---------|
+| Blazor WebAssembly | `Circuids.Bridge.Blazor` |
+| Blazor Server | `Circuids.Bridge.Blazor` |
+| MAUI Blazor Hybrid | `Circuids.Bridge.Maui` |
+| Shared Razor Class Library | `Circuids.Bridge` |
 
-- **Host Detection** - Detect whether the app is running in MAUI, Blazor, WPF, or WinForms
-- **Platform Detection** - Identify the operating system: Android, iOS, Windows, Mac, or Linux
-- **Form Factor Detection** - Classify the device as Phone, Tablet, or Desktop based on viewport width
-- **Connectivity Monitoring** - Monitor internet connectivity in real-time
-- **Theme Detection** - Detect the system light/dark mode preference
-- **Safe Area Insets** - Get safe area insets for notched/cutout devices
-- **BridgeHostHandler** - Execute host-specific C# logic with Blazor as the default implementation baseline
-- **Two-Way Binding** - Bind form factor and connectivity state directly to your components
+The Blazor and MAUI packages reference the core package transitively. Shared Razor Class Libraries normally reference only `Circuids.Bridge`; the host app provides the real implementation through DI.
 
----
+## Get Started
 
-## Table of Contents
+Bridge setup has two parts: register the host implementation, then put a provider around the UI that should receive initialized Bridge state.
 
-- [Getting Started](#getting-started)
-  - [Blazor WebAssembly](#blazor-webassembly)
-  - [Blazor Server](#blazor-server)
-  - [MAUI Blazor Hybrid](#maui-blazor-hybrid)
-  - [Shared Razor Class Library](#shared-razor-class-library-rcl)
-- [Usage](#usage)
-  - [Host Detection](#host-detection)
-  - [Platform Detection](#platform-detection)
-  - [Form Factor Detection](#form-factor-detection)
-  - [Connectivity Monitoring](#connectivity-monitoring)
-  - [Theme Detection](#theme-detection)
-  - [Safe Area Insets](#safe-area-insets)
-  - [BridgeHostHandler](#bridgehosthandler)
-  - [Two-Way Binding](#two-way-binding)
-  - [Using Services Directly via DI](#using-services-directly-via-di)
-- [Provider Configuration](#provider-configuration)
-- [API Reference](#api-reference)
-  - [Interfaces](#interfaces)
-  - [Enums](#enums)
-  - [Records and Models](#records-and-models)
-  - [Components](#components)
-  - [Providers](#providers)
-  - [Handlers](#handlers)
-  - [Exceptions](#exceptions)
-  - [Extension Methods](#extension-methods)
-- [License](#license)
-- [Contributing](#contributing)
-- [Sponsoring](#sponsoring)
+### Blazor WebAssembly
 
----
-
-# Getting Started
-
-All components and interfaces are in the `Circuids.Bridge` namespace.
-
-```razor
-@using Circuids.Bridge
-```
-
-## Blazor WebAssembly
-
-### 1. Install the package
-
-```
+```bash
 dotnet add package Circuids.Bridge.Blazor
 ```
 
-### 2. Register services
-
 ```csharp
-// Program.cs
 using Circuids.Bridge.Blazor;
+using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -102,13 +58,7 @@ builder.Services.AddBridgeForBlazor();
 await builder.Build().RunAsync();
 ```
 
-### 3. Add the provider
-
-Wrap your root layout (or `Router`) with `<BridgeProvider>`:
-
 ```razor
-@* MainLayout.razor *@
-@inherits LayoutComponentBase
 @using Circuids.Bridge
 
 <BridgeProvider>
@@ -116,40 +66,30 @@ Wrap your root layout (or `Router`) with `<BridgeProvider>`:
 </BridgeProvider>
 ```
 
-That's it -- all five services (`IBridge`, `IBridgeFormFactor`, `IBridgeConnectivity`, `IBridgeTheme`, `IBridgeSafeArea`) are now available via DI.
+### Blazor Server
 
----
-
-## Blazor Server
-
-### 1. Install the package
-
-```
+```bash
 dotnet add package Circuids.Bridge.Blazor
 ```
 
-### 2. Register services
-
 ```csharp
-// Program.cs
 using Circuids.Bridge.Blazor;
 
 var builder = WebApplication.CreateBuilder(args);
+
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
-
 builder.Services.AddBridgeForBlazor();
 
 var app = builder.Build();
+
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
+
 app.Run();
 ```
 
-### 3. Add the provider
-
 ```razor
-@* MainLayout.razor or Routes.razor *@
 @using Circuids.Bridge
 
 <BridgeProvider>
@@ -157,22 +97,15 @@ app.Run();
 </BridgeProvider>
 ```
 
-> **Note:** Bridge services require an interactive render mode. During static SSR pre-rendering, the provider won't initialize until the circuit connects. This is by design -- components will render with default values, then update once the provider initializes.
+Bridge initializes after the interactive circuit is available. During static prerendering, components render with default values and update after the circuit connects.
 
----
+### MAUI Blazor Hybrid
 
-## MAUI Blazor Hybrid
-
-### 1. Install the package
-
-```
+```bash
 dotnet add package Circuids.Bridge.Maui
 ```
 
-### 2. Register services
-
 ```csharp
-// MauiProgram.cs
 using Circuids.Bridge.Maui;
 
 public static class MauiProgram
@@ -190,13 +123,7 @@ public static class MauiProgram
 }
 ```
 
-### 3. Add the provider
-
-In your Blazor root layout (shared or MAUI-specific):
-
 ```razor
-@* MainLayout.razor *@
-@inherits LayoutComponentBase
 @using Circuids.Bridge
 
 <BridgeProvider>
@@ -204,514 +131,159 @@ In your Blazor root layout (shared or MAUI-specific):
 </BridgeProvider>
 ```
 
----
+## Use It In Shared UI
 
-## Shared Razor Class Library (RCL)
+Start with the components when the answer changes what you render.
 
-If you share UI between Blazor and MAUI, your RCL only needs the **core** package:
-
-```
-dotnet add package Circuids.Bridge
-```
-
-```razor
-@* In your shared RCL *@
-@using Circuids.Bridge
-@inject IBridge Bridge
-
-<BridgeHost>
-    <Maui>Running in MAUI</Maui>
-    <Blazor>Running in Blazor</Blazor>
-</BridgeHost>
-```
-
-The host project (Blazor or MAUI) provides the actual implementations via DI. Your shared library stays host-agnostic.
-
----
-
-# Usage
-
-## Host Detection
-
-Detect whether the app is running in MAUI, Blazor, WPF, or WinForms.
-
-### Component
+### Host-Specific UI
 
 ```razor
 <BridgeHost>
     <Maui>
-        <p>Running inside MAUI Blazor Hybrid</p>
+        <NativeToolbar />
     </Maui>
     <Blazor>
-        <p>Running in the browser (Blazor WASM or Server)</p>
+        <WebToolbar />
     </Blazor>
     <Default>
-        <p>Unknown host environment</p>
+        <StandardToolbar />
     </Default>
 </BridgeHost>
 ```
 
-### With context value
+### Responsive Layout
 
 ```razor
-<BridgeHost>
-    @if (context == Host.Maui)
-    {
-        <MauiSpecificComponent />
-    }
-    else
-    {
-        <WebSpecificComponent />
-    }
-</BridgeHost>
-```
+<BridgeFormFactor Context="viewport">
+    <DashboardFrame Layout="viewport.FormFactor" Width="viewport.Width" Height="viewport.Height" />
 
-### Via DI
-
-```razor
-@inject IBridge Bridge
-
-<p>Host: @Bridge.Host</p>
-```
-
----
-
-## Platform Detection
-
-Detect the operating system: Android, iOS, Windows, Mac, or Linux.
-
-### Component
-
-```razor
-<BridgePlatform>
-    <Android>Android device</Android>
-    <IOS>iPhone or iPad</IOS>
-    <Windows>Windows desktop</Windows>
-    <Mac>macOS</Mac>
-    <Linux>Linux</Linux>
-    <Default>Unknown platform</Default>
-</BridgePlatform>
-```
-
-### Via DI
-
-```razor
-@inject IBridge Bridge
-
-<p>Platform: @Bridge.Platform</p>
-<p>Version: @Bridge.PlatformVersion</p>
-```
-
-### Reacting to changes
-
-The `PlatformChanged` event fires once the platform is detected (useful when the provider initializes after the component renders):
-
-```razor
-@inject IBridge Bridge
-@implements IDisposable
-
-<p>Platform: @Bridge.Platform</p>
-
-@code {
-    protected override void OnInitialized()
-    {
-        Bridge.PlatformChanged += OnPlatformChanged;
-    }
-
-    private void OnPlatformChanged(object? sender, PlatformIdentity e)
-    {
-        InvokeAsync(StateHasChanged);
-    }
-
-    public void Dispose() => Bridge.PlatformChanged -= OnPlatformChanged;
-}
-```
-
----
-
-## Form Factor Detection
-
-Classify the device as Phone, Tablet, or Desktop based on viewport width.
-
-| Form Factor | Width Range |
-|-------------|------------|
-| Phone | <= 767px |
-| Tablet | 768px -- 1023px |
-| Desktop | >= 1024px |
-
-### Component -- named fragments
-
-```razor
-<BridgeFormFactor>
     <Phone>
-        <MobileLayout />
+        <MobileDashboard />
     </Phone>
-    <Tablet>
-        <TabletLayout />
-    </Tablet>
+    <TabletAndPhone>
+        <CompactDashboard />
+    </TabletAndPhone>
     <Desktop>
-        <DesktopLayout />
+        <DesktopDashboard />
     </Desktop>
     <Default>
-        <p>Loading...</p>
+        <LoadingLayout />
     </Default>
 </BridgeFormFactor>
 ```
 
-### Combination fragments
+Plain child content receives the current component context. Named slots such as `Phone`, `Desktop`, `Online`, and `Dark` stay simple branch fragments and are used only for selecting what to render.
 
-Target multiple form factors with a single fragment:
+`BridgeFormFactor` uses this fallback order:
 
-```razor
-<BridgeFormFactor>
-    <Desktop>
-        <SidebarLayout />
-    </Desktop>
-    <TabletAndPhone>
-        <StackedLayout />
-    </TabletAndPhone>
-</BridgeFormFactor>
-```
+| Active form factor | First matching slot wins |
+|--------------------|--------------------------|
+| Phone | `Phone`, `TabletAndPhone`, `DesktopAndPhone`, `Default` |
+| Tablet | `Tablet`, `TabletAndPhone`, `DesktopAndTablet`, `Default` |
+| Desktop | `Desktop`, `DesktopAndTablet`, `DesktopAndPhone`, `Default` |
+| Unknown | `Default` |
 
-Available combinations: `DesktopAndTablet`, `DesktopAndPhone`, `TabletAndPhone`.
-
-**Resolution order:**
-- Phone: `Phone` -> `TabletAndPhone` -> `DesktopAndPhone` -> `Default`
-- Tablet: `Tablet` -> `TabletAndPhone` -> `DesktopAndTablet` -> `Default`
-- Desktop: `Desktop` -> `DesktopAndTablet` -> `DesktopAndPhone` -> `Default`
-
-### Context value -- access dimensions
-
-```razor
-<BridgeFormFactor>
-    @{
-        var info = context;
-    }
-    <p>Form factor: @info.FormFactor</p>
-    <p>Viewport: @info.Width x @info.Height</p>
-</BridgeFormFactor>
-```
-
-### Listen once (no resize tracking)
-
-For static layouts that don't need to respond to resizes:
-
-```razor
-<BridgeFormFactor ListenOnce="true">
-    <Phone><MobileView /></Phone>
-    <Desktop><DesktopView /></Desktop>
-</BridgeFormFactor>
-```
-
-### Via DI
-
-```razor
-@inject IBridgeFormFactor FormFactor
-
-<p>Current: @FormFactor.FormFactor.FormFactor (@FormFactor.FormFactor.Width x @FormFactor.FormFactor.Height)</p>
-```
-
----
-
-## Connectivity Monitoring
-
-Monitor internet connectivity in real-time.
-
-### Component
+### Connectivity State
 
 ```razor
 <BridgeConnectivity>
     <Online>
-        <p>You're connected to the internet.</p>
+        <SyncStatus />
     </Online>
     <Offline>
-        <div class="alert alert-warning">
-            No internet connection. Some features may be unavailable.
-        </div>
+        <OfflineBanner />
     </Offline>
 </BridgeConnectivity>
 ```
 
-### Context value
-
-```razor
-<BridgeConnectivity>
-    <p>Online: @context</p>
-</BridgeConnectivity>
-```
-
-### Via DI
-
-```razor
-@inject IBridgeConnectivity Connectivity
-@implements IDisposable
-
-<p>Connected: @Connectivity.IsConnected</p>
-
-@code {
-    protected override void OnInitialized()
-    {
-        Connectivity.ConnectionChanged += OnConnectionChanged;
-    }
-
-    private void OnConnectionChanged(object? sender, bool isConnected)
-    {
-        InvokeAsync(StateHasChanged);
-    }
-
-    public void Dispose() => Connectivity.ConnectionChanged -= OnConnectionChanged;
-}
-```
-
-### Configuring connectivity checks (Blazor only)
-
-On Blazor, connectivity is checked by polling a URL. Configure this via `ConnectivityOptions`:
-
-```razor
-<BridgeProvider ConnectivityOptions="@(new ConnectivityOptions
-{
-    IntervalInSeconds = 30,
-    TestUrl = "/api/health"
-})">
-    @Body
-</BridgeProvider>
-```
-
-| Property | Default | Description |
-|----------|---------|-------------|
-| `IntervalInSeconds` | `10` | Polling interval in seconds. |
-| `TestUrl` | `"/favicon.ico"` | URL to HEAD-request. Use a self-hosted endpoint to avoid CORS and regional blocks. |
-
-> On MAUI, connectivity uses the native `Connectivity.ConnectivityChanged` event -- no polling needed. `ConnectivityOptions` is ignored.
-
----
-
-## Theme Detection
-
-Detect the system light/dark mode preference.
-
-### Component
+### Theme And Safe Area
 
 ```razor
 <BridgeTheme>
-    <Light>
-        <div class="light-theme">Light mode content</div>
-    </Light>
-    <Dark>
-        <div class="dark-theme">Dark mode content</div>
-    </Dark>
-    <Default>
-        <div>Theme not detected</div>
-    </Default>
+    <Light><AppShell Theme="light" /></Light>
+    <Dark><AppShell Theme="dark" /></Dark>
+    <Default><AppShell Theme="system" /></Default>
 </BridgeTheme>
-```
 
-### Context value
-
-```razor
-<BridgeTheme>
-    <p>Current theme: @context</p>
-</BridgeTheme>
-```
-
-### Via DI
-
-```razor
-@inject IBridgeTheme Theme
-@implements IDisposable
-
-<p>Theme: @Theme.Theme</p>
-
-@code {
-    protected override void OnInitialized()
-    {
-        Theme.ThemeChanged += OnThemeChanged;
-    }
-
-    private void OnThemeChanged(object? sender, ThemeMode mode)
-    {
-        InvokeAsync(StateHasChanged);
-    }
-
-    public void Dispose() => Theme.ThemeChanged -= OnThemeChanged;
-}
-```
-
----
-
-## Safe Area Insets
-
-Get safe area insets for notched/cutout devices (iPhone notch, Android camera cutout, gesture navigation bars).
-
-### Component
-
-```razor
-<BridgeSafeArea>
-    @{
-        var insets = context;
-    }
-    <div style="padding: @(insets.Top)px @(insets.Right)px @(insets.Bottom)px @(insets.Left)px;">
-        <p>Content with safe area padding</p>
+<BridgeSafeArea Context="safeArea">
+    <div style="padding: @(safeArea.Top)px @(safeArea.Right)px @(safeArea.Bottom)px @(safeArea.Left)px">
+        <MainShell />
     </div>
 </BridgeSafeArea>
 ```
 
-### Via DI
-
-```razor
-@inject IBridgeSafeArea SafeArea
-
-@if (SafeArea.SafeArea.HasInsets)
-{
-    <div style="padding-top: @(SafeArea.SafeArea.Top)px; padding-bottom: @(SafeArea.SafeArea.Bottom)px;">
-        @ChildContent
-    </div>
-}
-```
-
-### Blazor HTML requirement
-
-For safe area insets to work in Blazor, add `viewport-fit=cover` to your HTML:
+For web safe-area insets, add `viewport-fit=cover` to the app host page:
 
 ```html
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 ```
 
----
+### Bind To Component State
 
-## BridgeHostHandler
-
-Execute different C# logic depending on the host -- without `#if` preprocessor directives.
-
-### Returning a value
-
-```csharp
-using Circuids.Bridge;
-
-public class StoragePathHandler(IBridge bridge) : BridgeHostHandler<string>(bridge)
-{
-    protected override string OnBlazor() => "/local-storage";
-
-    protected override string OnMaui() => FileSystem.AppDataDirectory;
-}
-
-// Usage
-var handler = new StoragePathHandler(bridge);
-string path = handler.Execute();
-```
-
-### Void (side effects)
-
-```csharp
-public class NotificationHandler(IBridge bridge) : BridgeHostHandler(bridge)
-{
-    protected override void OnBlazor()
-    {
-        // Show browser notification via JS interop
-    }
-
-    protected override void OnMaui()
-    {
-        // Show native MAUI notification
-    }
-}
-```
-
-### Async host handler
-
-```csharp
-public class DataSyncHandler(IBridge bridge) : BridgeHostHandlerAsync(bridge)
-{
-    protected override async Task OnBlazor()
-    {
-        await SyncWithIndexedDb();
-    }
-
-    protected override async Task OnMaui()
-    {
-        await SyncWithSqlite();
-    }
-}
-
-// Usage
-await handler.ExecuteAsync();
-```
-
-### Default fallbacks
-
-`OnMaui()`, `OnWpf()`, and `OnWinForms()` default to calling `OnBlazor()`. Override only the hosts that need different behavior:
-
-```csharp
-public class ClipboardHandler(IBridge bridge) : BridgeHostHandler(bridge)
-{
-    protected override void OnBlazor() => /* JS clipboard API */;
-    protected override void OnMaui() => /* MAUI clipboard */;
-    protected override void OnWpf() => /* WPF-specific clipboard */;
-    // OnWinForms() falls back to OnBlazor() by default
-}
-```
-
----
-
-## Two-Way Binding
-
-The `BridgeFormFactor` and `BridgeConnectivity` components support two-way binding.
-
-### Form factor
+`BridgeFormFactor` and `BridgeConnectivity` can push their current state into fields with normal Blazor binding.
 
 ```razor
 <BridgeFormFactor @bind-FormFactor="currentFormFactor">
-    <Phone>Phone UI</Phone>
-    <Desktop>Desktop UI</Desktop>
+    <Desktop>
+        <DesktopDashboard />
+    </Desktop>
+    <Default>
+        <CompactDashboard />
+    </Default>
 </BridgeFormFactor>
 
-<p>Current: @currentFormFactor.FormFactor</p>
+<BridgeConnectivity @bind-IsConnected="isConnected">
+    <Online>
+        <SyncStatus />
+    </Online>
+    <Offline>
+        <OfflineBanner />
+    </Offline>
+</BridgeConnectivity>
+
+<p>@currentFormFactor.FormFactor</p>
+<p>@(isConnected ? "Online" : "Offline")</p>
 
 @code {
     private FormFactorInfo currentFormFactor = FormFactorInfo.Unknown();
+    private bool isConnected;
 }
 ```
 
-### Connectivity
+## Use It In C#
 
-```razor
-<BridgeConnectivity @bind-IsConnected="isOnline">
-    <Online>Online</Online>
-    <Offline>Offline</Offline>
-</BridgeConnectivity>
-
-@code {
-    private bool isOnline;
-}
-```
-
----
-
-## Using Services Directly via DI
-
-All features are available as injectable services -- you don't have to use the Razor components.
+Inject services when runtime state belongs in code rather than markup.
 
 ```razor
 @inject IBridge Bridge
 @inject IBridgeFormFactor FormFactor
 @inject IBridgeConnectivity Connectivity
-@inject IBridgeTheme Theme
-@inject IBridgeSafeArea SafeArea
+
+<p>@Bridge.Host on @Bridge.Platform</p>
+<p>@FormFactor.FormFactor.FormFactor</p>
+<p>@(Connectivity.IsConnected ? "Online" : "Offline")</p>
 ```
 
-| Service | Key Properties / Events |
-|---------|------------------------|
-| `IBridge` | `Host`, `Platform`, `PlatformVersion`, `IsInitialized`, `PlatformChanged` |
-| `IBridgeFormFactor` | `FormFactor`, `FormFactorChanged`, `CreateListenerAsync()`, `DisposeListenerAsync()` |
-| `IBridgeConnectivity` | `IsConnected`, `ConnectionChanged` |
-| `IBridgeTheme` | `Theme`, `ThemeChanged` |
-| `IBridgeSafeArea` | `SafeArea`, `SafeAreaChanged` |
+For host-specific C# behavior, use a host handler. `OnBlazor()` is the required baseline; MAUI, WPF, and WinForms fall back to it unless you override them.
 
----
+```csharp
+using Circuids.Bridge;
 
-# Provider Configuration
+public sealed class StoragePathHandler : BridgeHostHandler<string>
+{
+    public StoragePathHandler(IBridge bridge) : base(bridge)
+    {
+    }
 
-### Composite provider (default -- all features enabled)
+    protected override string OnBlazor() => "/local-storage";
+
+    protected override string OnMaui() => FileSystem.AppDataDirectory;
+}
+```
+
+## Configure The Provider
+
+Most apps can use the default provider:
 
 ```razor
 <BridgeProvider>
@@ -719,361 +291,67 @@ All features are available as injectable services -- you don't have to use the R
 </BridgeProvider>
 ```
 
-### Form factor resize mode
+Tune behavior only when the app needs it.
 
 ```razor
-<BridgeProvider FormFactorResizeMode="ResizeMode.Global">
+<BridgeProvider
+    FormFactorResizeMode="ResizeMode.Global"
+    ConnectivityOptions='@(new ConnectivityOptions { IntervalInSeconds = 30, TestUrl = "/health" })'>
     @Body
 </BridgeProvider>
 ```
 
-| Mode | Behavior |
-|------|----------|
-| `ResizeMode.None` | No global listener. Components create/dispose their own listeners on demand. |
-| `ResizeMode.Global` | A single persistent listener shared across all components. Best for apps that always need responsive layout. |
-| `ResizeMode.Once` | Reads the form factor once at initialization. No ongoing listening. Lightest option. |
+| Option | When to use it |
+|--------|----------------|
+| `ResizeMode.None` | Components create form-factor listeners only when needed. This is the default. |
+| `ResizeMode.Global` | The app always needs responsive state and should keep one listener active. |
+| `ResizeMode.Once` | The app needs the initial form factor only. |
+| `ConnectivityOptions` | Blazor apps should poll a self-hosted URL such as `/health` or `/favicon.ico`. MAUI uses native connectivity and ignores this option. |
 
-### Connectivity options
-
-```razor
-<BridgeProvider ConnectivityOptions="@(new ConnectivityOptions { IntervalInSeconds = 30, TestUrl = "/health" })">
-    @Body
-</BridgeProvider>
-```
-
-### Selective -- individual providers
-
-For maximum control, use individual providers instead of the composite. Place them in any long-lived layout element -- no nesting required:
+You can also initialize only one feature with an individual provider:
 
 ```razor
-@* MainLayout.razor *@
-<BridgeFormFactorProvider Mode="ResizeMode.Global">
-    <TopBar />
-</BridgeFormFactorProvider>
-
 <BridgeThemeProvider>
     @Body
 </BridgeThemeProvider>
-
-<BridgeConnectivityProvider>
-    <StatusBar />
-</BridgeConnectivityProvider>
 ```
 
-> **Note:** When using individual providers, call `IBridge.InitializeAsync()` yourself if you need host/platform detection. The individual providers don't initialize `IBridge` automatically.
+Individual providers do not initialize `IBridge`. Use `BridgeProvider` when host/platform state is part of the same subtree.
 
----
+## What Bridge Provides
 
-# API Reference
+| Need | Component | Service |
+|------|-----------|---------|
+| Host-specific rendering | `BridgeHost` | `IBridge` |
+| Platform-specific rendering | `BridgePlatform` | `IBridge` |
+| Phone/tablet/desktop layout | `BridgeFormFactor` | `IBridgeFormFactor` |
+| Online/offline UI | `BridgeConnectivity` | `IBridgeConnectivity` |
+| Light/dark UI | `BridgeTheme` | `IBridgeTheme` |
+| Notch/cutout padding | `BridgeSafeArea` | `IBridgeSafeArea` |
 
-## Interfaces
+## Learn More
 
-### IBridge
+- [Getting Started](docs/getting-started.md) - setup details for each host.
+- [Usage Guide](docs/usage.md) - complete component and service examples.
+- [API Reference](docs/api-reference.md) - interfaces, enums, records, components, providers, and handlers.
 
-Core bridge service for host and platform detection.
+## Contributing
 
-```csharp
-public interface IBridge
-{
-    Host Host { get; }
-    PlatformIdentity Platform { get; }
-    string PlatformVersion { get; }
-    bool IsInitialized { get; }
-    event EventHandler<PlatformIdentity>? PlatformChanged;
-    Task InitializeAsync();
-}
-```
+Contributions are welcome. Please open an issue or submit a pull request with a clear description of the change and the behavior it affects. For significant changes, please discuss the approach in an issue before implementing it and also add or update tests as needed.
 
-### IBridgeFormFactor
+When contributing, please follow the existing code style and patterns. For new features, include unit tests for any new logic and consider adding component tests for any new rendering behavior. If the change affects public runtime behavior, add Pulse conformance cases to ensure it works correctly in real host apps.
 
-Form factor detection with optional resize listening.
+- Architecture: [docs/architecture.md](docs/architecture.md)
+- Testing: [docs/testing-architecture.md](docs/testing-architecture.md)
 
-```csharp
-public interface IBridgeFormFactor
-{
-    FormFactorInfo FormFactor { get; }
-    event EventHandler<FormFactorInfo>? FormFactorChanged;
-    Task InitializeAsync(ResizeMode resizeMode = ResizeMode.None);
-    Task CreateListenerAsync();
-    ValueTask DisposeListenerAsync();
-}
-```
+## Background
 
-### IBridgeConnectivity
+Bridge is the production successor to [MauiBlazorBridge](https://github.com/AathifMahir/MauiBlazorBridge), an earlier experimental package by the same author. That package is now archived. Bridge was written from the ground up as a stable, production-ready implementation of the same concept.
 
-Internet connectivity monitoring.
+## License
 
-```csharp
-public interface IBridgeConnectivity
-{
-    bool IsConnected { get; }
-    event EventHandler<bool>? ConnectionChanged;
-    Task InitializeAsync(ConnectivityOptions? options = null);
-}
-```
+Bridge is licensed under the [MIT License](https://github.com/Circuids/Bridge/blob/main/LICENSE).
 
-### IBridgeTheme
-
-System theme (light/dark mode) detection.
-
-```csharp
-public interface IBridgeTheme
-{
-    ThemeMode Theme { get; }
-    event EventHandler<ThemeMode>? ThemeChanged;
-    Task InitializeAsync();
-}
-```
-
-### IBridgeSafeArea
-
-Safe area insets for notched/cutout devices.
-
-```csharp
-public interface IBridgeSafeArea
-{
-    SafeAreaInsets SafeArea { get; }
-    event EventHandler<SafeAreaInsets>? SafeAreaChanged;
-    Task InitializeAsync();
-}
-```
-
----
-
-## Enums
-
-### Host
-
-```csharp
-public enum Host
-{
-    Unknown,
-    Maui,
-    Blazor,
-    Wpf,
-    WinForms,
-}
-```
-
-### PlatformIdentity
-
-```csharp
-public enum PlatformIdentity
-{
-    Unknown,
-    Android,
-    IOS,
-    Windows,
-    Mac,
-    Linux,
-}
-```
-
-### FormFactor
-
-```csharp
-public enum FormFactor
-{
-    Unknown,
-    Phone,
-    Tablet,
-    Desktop,
-}
-```
-
-### ResizeMode
-
-```csharp
-public enum ResizeMode
-{
-    None,    // Components manage their own listeners
-    Global,  // Single persistent shared listener
-    Once,    // Read once, no ongoing listening
-}
-```
-
-### ThemeMode
-
-```csharp
-public enum ThemeMode
-{
-    Unknown,
-    Light,
-    Dark,
-}
-```
-
----
-
-## Records and Models
-
-### FormFactorInfo
-
-```csharp
-public sealed record FormFactorInfo(FormFactor FormFactor, double Width, double Height)
-{
-    public static FormFactorInfo Unknown();
-    public static FormFactorInfo Unknown(double width, double height);
-}
-```
-
-### SafeAreaInsets
-
-```csharp
-public sealed record SafeAreaInsets(double Top, double Right, double Bottom, double Left)
-{
-    public static SafeAreaInsets Zero { get; }
-    public bool HasInsets { get; }
-}
-```
-
-### ConnectivityOptions
-
-```csharp
-public sealed class ConnectivityOptions
-{
-    public int IntervalInSeconds { get; set; } = 10;     // Polling interval (Blazor only)
-    public string TestUrl { get; set; } = "/favicon.ico"; // URL to ping (Blazor only)
-}
-```
-
----
-
-## Components
-
-All components are in the `Circuids.Bridge` namespace.
-
-| Component | RenderFragments | Context Type |
-|-----------|----------------|--------------|
-| `<BridgeHost>` | `Maui`, `Blazor`, `Wpf`, `WinForms`, `Default` | `Host` |
-| `<BridgePlatform>` | `Android`, `IOS`, `Windows`, `Mac`, `Linux`, `Default` | `PlatformIdentity` |
-| `<BridgeFormFactor>` | `Phone`, `Tablet`, `Desktop`, `DesktopAndTablet`, `DesktopAndPhone`, `TabletAndPhone`, `Default` | `FormFactorInfo` |
-| `<BridgeConnectivity>` | `Online`, `Offline` | `bool` |
-| `<BridgeTheme>` | `Light`, `Dark`, `Default` | `ThemeMode` |
-| `<BridgeSafeArea>` | -- | `SafeAreaInsets` |
-
----
-
-## Providers
-
-| Provider | Parameters | Description |
-|----------|-----------|-------------|
-| `<BridgeProvider>` | `FormFactorResizeMode`, `ConnectivityOptions` | Composite -- initializes all services. |
-| `<BridgeFormFactorProvider>` | `Mode` (`ResizeMode`) | Initializes `IBridgeFormFactor`. |
-| `<BridgeConnectivityProvider>` | `Options` (`ConnectivityOptions?`) | Initializes `IBridgeConnectivity`. |
-| `<BridgeThemeProvider>` | -- | Initializes `IBridgeTheme`. |
-| `<BridgeSafeAreaProvider>` | -- | Initializes `IBridgeSafeArea`. |
-
----
-
-## Handlers
-
-### BridgeHostHandler\<T>
-
-```csharp
-public abstract class BridgeHostHandler<T>(IBridge bridge)
-{
-    protected abstract T OnBlazor();
-    protected virtual T OnMaui() => OnBlazor();
-    protected virtual T OnWpf() => OnBlazor();
-    protected virtual T OnWinForms() => OnBlazor();
-    protected virtual T OnUnknown() => throw new BridgeException(...);
-    public T Execute();
-}
-```
-
-### BridgeHostHandler
-
-```csharp
-public abstract class BridgeHostHandler(IBridge bridge)
-{
-    protected abstract void OnBlazor();
-    protected virtual void OnMaui() => OnBlazor();
-    protected virtual void OnWpf() => OnBlazor();
-    protected virtual void OnWinForms() => OnBlazor();
-    protected virtual void OnUnknown() => throw new BridgeException(...);
-    public void Execute();
-}
-```
-
-### BridgeHostHandlerAsync\<T>
-
-```csharp
-public abstract class BridgeHostHandlerAsync<T>(IBridge bridge)
-{
-    protected abstract Task<T> OnBlazor();
-    protected virtual Task<T> OnMaui() => OnBlazor();
-    protected virtual Task<T> OnWpf() => OnBlazor();
-    protected virtual Task<T> OnWinForms() => OnBlazor();
-    protected virtual Task<T> OnUnknown() => throw new BridgeException(...);
-    public Task<T> ExecuteAsync();
-}
-```
-
-### BridgeHostHandlerAsync
-
-```csharp
-public abstract class BridgeHostHandlerAsync(IBridge bridge)
-{
-    protected abstract Task OnBlazor();
-    protected virtual Task OnMaui() => OnBlazor();
-    protected virtual Task OnWpf() => OnBlazor();
-    protected virtual Task OnWinForms() => OnBlazor();
-    protected virtual Task OnUnknown() => throw new BridgeException(...);
-    public Task ExecuteAsync();
-}
-```
-
----
-
-## Exceptions
-
-### BridgeException
-
-```csharp
-public sealed class BridgeException : Exception
-{
-    public BridgeException(string message);
-    public BridgeException(string message, Exception innerException);
-}
-```
-
----
-
-## Extension Methods
-
-### Circuids.Bridge.Blazor
-
-```csharp
-public static IServiceCollection AddBridgeForBlazor(this IServiceCollection services);
-```
-
-### Circuids.Bridge.Maui
-
-```csharp
-public static IServiceCollection AddBridgeForMaui(this IServiceCollection services);
-```
-
----
-
-# License
-
-**Bridge** is Licensed Under [MIT License](https://github.com/Circuids/Bridge/blob/main/LICENSE).
-
----
-
-# Contributing
-
-Contributions are welcome. If you wish to contribute to this project, please don't hesitate to create an issue or submit a pull request. Your input and feedback are highly appreciated.
-
-Before submitting a PR:
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Submit a pull request with a clear description
-
----
-
-# Sponsoring
+## Sponsoring
 
 If you find this project useful and would like to support its continued development, consider [becoming a sponsor](https://github.com/sponsors/Circuids). Your contributions are instrumental in keeping this project maintained and growing. Thank you for your support.

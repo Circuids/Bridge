@@ -1,4 +1,5 @@
-using Circuids.Bridge.Tests.Fakes;
+using Circuids.Bridge.TestSupport.Fakes;
+using Circuids.Bridge.TestSupport.Handlers;
 
 namespace Circuids.Bridge.Tests.Core.Handlers;
 
@@ -10,44 +11,44 @@ public sealed class BridgeHostHandlerTests
     public void Execute_DispatchesToOnBlazor_WhenHostIsBlazor()
     {
         var bridge = new FakeBridge { Host = Host.Blazor };
-        var handler = new TrackedHandler(bridge);
+        var handler = new RecordingHostHandler(bridge);
 
         handler.Execute();
 
-        Assert.Equal("Blazor", handler.CalledMethod);
+        Assert.Equal("Blazor", handler.Branch);
     }
 
     [Fact]
     public void Execute_DispatchesToOnMaui_WhenHostIsMaui()
     {
         var bridge = new FakeBridge { Host = Host.Maui };
-        var handler = new TrackedHandler(bridge);
+        var handler = new RecordingHostHandler(bridge);
 
         handler.Execute();
 
-        Assert.Equal("Maui", handler.CalledMethod);
+        Assert.Equal("Maui", handler.Branch);
     }
 
     [Fact]
     public void Execute_DispatchesToOnWpf_WhenHostIsWpf()
     {
         var bridge = new FakeBridge { Host = Host.Wpf };
-        var handler = new TrackedHandler(bridge);
+        var handler = new RecordingHostHandler(bridge);
 
         handler.Execute();
 
-        Assert.Equal("Wpf", handler.CalledMethod);
+        Assert.Equal("Wpf", handler.Branch);
     }
 
     [Fact]
     public void Execute_DispatchesToOnWinForms_WhenHostIsWinForms()
     {
         var bridge = new FakeBridge { Host = Host.WinForms };
-        var handler = new TrackedHandler(bridge);
+        var handler = new RecordingHostHandler(bridge);
 
         handler.Execute();
 
-        Assert.Equal("WinForms", handler.CalledMethod);
+        Assert.Equal("WinForms", handler.Branch);
     }
 
     // ── Default fallback behavior ─────────────────────────────────────────────
@@ -56,7 +57,7 @@ public sealed class BridgeHostHandlerTests
     public void Execute_FallsBackToOnBlazor_WhenOnWpfNotOverridden()
     {
         var bridge = new FakeBridge { Host = Host.Wpf };
-        var handler = new BlazorOnlyHandler(bridge);
+        var handler = new BlazorOnlyActionHostHandler(bridge);
 
         handler.Execute();
 
@@ -67,7 +68,7 @@ public sealed class BridgeHostHandlerTests
     public void Execute_FallsBackToOnBlazor_WhenOnWinFormsNotOverridden()
     {
         var bridge = new FakeBridge { Host = Host.WinForms };
-        var handler = new BlazorOnlyHandler(bridge);
+        var handler = new BlazorOnlyActionHostHandler(bridge);
 
         handler.Execute();
 
@@ -78,7 +79,7 @@ public sealed class BridgeHostHandlerTests
     public void Execute_FallsBackToOnBlazor_WhenOnMauiNotOverridden()
     {
         var bridge = new FakeBridge { Host = Host.Maui };
-        var handler = new BlazorOnlyHandler(bridge);
+        var handler = new BlazorOnlyActionHostHandler(bridge);
 
         handler.Execute();
 
@@ -91,12 +92,11 @@ public sealed class BridgeHostHandlerTests
     public void Execute_CallsCustomOnWpf_WhenOverridden()
     {
         var bridge = new FakeBridge { Host = Host.Wpf };
-        var handler = new TrackedHandler(bridge);
+        var handler = new RecordingHostHandler(bridge);
 
         handler.Execute();
 
-        Assert.Equal("Wpf", handler.CalledMethod);
-        Assert.False(handler.BlazorCalledAsDefault);
+        Assert.Equal("Wpf", handler.Branch);
     }
 
     // ── Unknown host ──────────────────────────────────────────────────────────
@@ -105,7 +105,7 @@ public sealed class BridgeHostHandlerTests
     public void Execute_ThrowsBridgeException_WhenHostIsUnknown()
     {
         var bridge = new FakeBridge { Host = Host.Unknown };
-        var handler = new BlazorOnlyHandler(bridge);
+        var handler = new BlazorOnlyActionHostHandler(bridge);
 
         var act = () => handler.Execute();
 
@@ -120,34 +120,11 @@ public sealed class BridgeHostHandlerTests
     public void Execute_DoesNotThrow_ForAllKnownHostValues(Host host)
     {
         var bridge = new FakeBridge { Host = host };
-        var handler = new BlazorOnlyHandler(bridge);
+        var handler = new BlazorOnlyActionHostHandler(bridge);
 
         var act = () => handler.Execute();
 
         act();
     }
 
-    // ── Test helpers ──────────────────────────────────────────────────────────
-
-    private sealed class TrackedHandler : BridgeHostHandler
-    {
-        public string CalledMethod { get; private set; } = string.Empty;
-        public bool BlazorCalledAsDefault { get; private set; }
-
-        public TrackedHandler(IBridge bridge) : base(bridge) { }
-
-        protected override void OnBlazor() => CalledMethod = "Blazor";
-        protected override void OnMaui() => CalledMethod = "Maui";
-        protected override void OnWpf() => CalledMethod = "Wpf";
-        protected override void OnWinForms() => CalledMethod = "WinForms";
-    }
-
-    private sealed class BlazorOnlyHandler : BridgeHostHandler
-    {
-        public bool BlazorCalled { get; private set; }
-
-        public BlazorOnlyHandler(IBridge bridge) : base(bridge) { }
-
-        protected override void OnBlazor() => BlazorCalled = true;
-    }
 }

@@ -50,13 +50,25 @@ internal sealed class BridgeConnectivityBlazor : IBridgeConnectivity, IAsyncDisp
 
     public async ValueTask DisposeAsync()
     {
-        if (!_isInitialized || !_moduleTask.IsValueCreated) return;
+        try
+        {
+            if (_moduleTask.IsValueCreated)
+            {
+                var module = await _moduleTask.Value;
 
-        var module = await _moduleTask.Value;
-        await module.InvokeVoidAsync("disposeListener");
-        await module.DisposeAsync();
+                if (_isInitialized)
+                    await module.InvokeVoidAsync("disposeListener");
 
-        _dotNetRef.Dispose();
-        _isInitialized = false;
+                await module.DisposeAsync();
+            }
+        }
+        catch (JSDisconnectedException)
+        {
+        }
+        finally
+        {
+            _dotNetRef.Dispose();
+            _isInitialized = false;
+        }
     }
 }

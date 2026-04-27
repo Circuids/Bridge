@@ -1,0 +1,108 @@
+:root {
+    color-scheme: light dark;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+body {
+    margin: 0;
+    background: Canvas;
+    color: CanvasText;
+}
+
+.shell {
+    width: min(1120px, calc(100vw - 32px));
+    margin: 0 auto;
+    padding: 32px 0;
+}
+
+h1 {
+    font-size: 1.75rem;
+    font-weight: 650;
+    margin: 0 0 16px;
+}
+
+.run-button {
+    min-height: 36px;
+    padding: 0 14px;
+    border: 1px solid ButtonBorder;
+    border-radius: 6px;
+    background: ButtonFace;
+    color: ButtonText;
+}
+
+.failure-toggle {
+    display: inline-flex;
+    gap: 8px;
+    align-items: center;
+    min-height: 36px;
+    margin-left: 12px;
+    font-size: 0.92rem;
+}
+
+.duration-input {
+    display: inline-flex;
+    gap: 8px;
+    align-items: center;
+    min-height: 36px;
+    margin-left: 12px;
+    font-size: 0.92rem;
+}
+
+.duration-input input {
+    width: 64px;
+}
+
+.summary {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    margin: 20px 0;
+    padding: 12px;
+    border: 1px solid color-mix(in srgb, CanvasText 18%, transparent);
+    border-radius: 6px;
+}
+
+.environment {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 6px 12px;
+}
+
+.environment dt {
+    font-weight: 650;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-size: 0.92rem;
+}
+
+th,
+td {
+    padding: 8px;
+    border-bottom: 1px solid color-mix(in srgb, CanvasText 15%, transparent);
+    text-align: left;
+    vertical-align: top;
+}
+
+tr.failed {
+    background: color-mix(in srgb, red 12%, transparent);
+}
+
+tr.skipped {
+    background: color-mix(in srgb, orange 14%, transparent);
+}
+
+pre {
+    overflow: auto;
+    padding: 12px;
+    border-radius: 6px;
+    background: color-mix(in srgb, CanvasText 8%, transparent);
+}
+
+#blazor-error-ui {
+    display: none;
+}
