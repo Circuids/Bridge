@@ -51,6 +51,9 @@ internal sealed class BridgeFormFactorBlazor : IBridgeFormFactor, IAsyncDisposab
 
     public async Task CreateListenerAsync()
     {
+        if (!_isInitialized)
+            throw new BridgeException("BridgeFormFactor is not initialized. Ensure BridgeProvider is in the render tree.");
+
         if (_resizeMode is ResizeMode.Once) return;
 
         CancelPendingDispose();
@@ -66,8 +69,6 @@ internal sealed class BridgeFormFactorBlazor : IBridgeFormFactor, IAsyncDisposab
 
         await module.InvokeVoidAsync("initialize", _dotNetRef);
         _listenerCount++;
-
-        FormFactorChanged?.Invoke(this, FormFactor);
     }
 
     [JSInvokable]
