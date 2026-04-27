@@ -10,13 +10,6 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<RootNamespace>Circuids.Bridge.Maui</RootNamespace>
-
-		<!-- Enable XAML source generation for faster build times and improved performance.
-		     This generates C# code from XAML at compile time instead of runtime inflation.
-		     To disable, remove this line.
-		     For individual files, you can override by setting Inflator metadata:
-		       <MauiXaml Update="MyPage.xaml" Inflator="Default" /> (reverts to defaults: Runtime for Debug, XamlC for Release)
-		       <MauiXaml Update="MyPage.xaml" Inflator="Runtime" /> (force runtime inflation) -->
 		<MauiXamlInflator>SourceGen</MauiXamlInflator>
 
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">15.0</SupportedOSPlatformVersion>
@@ -25,6 +18,37 @@
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
 		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
 	</PropertyGroup>
+
+
+	<PropertyGroup>
+		<Title>Bridge - Maui</Title>
+		<PackageIcon>icon.png</PackageIcon>
+		<AssemblyVersion>1.0.0.0</AssemblyVersion>
+		<AssemblyFileVersion>1.0.0.0</AssemblyFileVersion>
+		<Version>1.0.0</Version>
+		<Product>$(AssemblyName) ($(TargetFramework))</Product>
+		<PackageVersion>$(Version)$(VersionSuffix)</PackageVersion>
+		<UseFullSemVerForNuGet>false</UseFullSemVerForNuGet>
+		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+		<Authors>Aathif Mahir</Authors>
+		<Owners>Aathif Mahir</Owners>
+		<NeutralLanguage>en</NeutralLanguage>
+		<DefineConstants>$(DefineConstants);</DefineConstants>
+		<Configurations>Debug;Release</Configurations>
+		<GeneratePackageOnBuild>False</GeneratePackageOnBuild>
+		<GitInfoReportImportance>high</GitInfoReportImportance>
+		<PackageReleaseNotes>$([System.IO.File]::ReadAllText("$(MSBuildProjectDirectory)/ReleaseNotes.txt"))</PackageReleaseNotes>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageProjectUrl>https://github.com/Circuids/Bridge</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/Circuids/Bridge</RepositoryUrl>
+		<Copyright>© Circuids. All rights reserved.</Copyright>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="README.md" Pack="true" PackagePath="\" />
+		<None Include="..\..\..\images\icon.png" PackagePath="icon.png" Pack="true" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
