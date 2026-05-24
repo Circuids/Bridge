@@ -5,7 +5,7 @@
 <div align="center">
 
 [![NuGet](https://img.shields.io/nuget/v/Circuids.Bridge.svg)](https://nuget.org/packages/Circuids.Bridge/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/Circuids/Bridge/blob/master/LICENSE)
+[![License: Apache-2.0](https://img.shields.io/badge/License-Apache2.0-blue.svg)](https://github.com/Circuids/Bridge/blob/master/LICENSE)
 
 </div>
 
