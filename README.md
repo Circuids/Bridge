@@ -349,7 +349,7 @@ Bridge is the production successor to [MauiBlazorBridge](https://github.com/Aath
 
 ## License
 
-Bridge is licensed under the [MIT License](https://github.com/Circuids/Bridge/blob/master/LICENSE).
+Bridge is licensed under the [Apache-2.0 License](https://github.com/Circuids/Bridge/blob/master/LICENSE).
 
 ## Sponsoring
 
